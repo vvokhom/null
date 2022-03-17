@@ -79,22 +79,39 @@ struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum) {
     int n = formStack->size;
     int start = 0;
     sortFormStack(formStack);
-    struct FormStack* stacks[n];
+    struct FormStack** stacks = malloc(sizeof(struct FormStack*) * n); //TODO: динамическое выделение памяти
+    for (int i =1;  i < n; i++) {
 
-    for (int i =0;  i < n; i++) {
-
-        if (/*isNext(&(formStack->stack[i - 1]), &(formStack->stack[i]))*/ 1 == 1) {
+        if (!isNext(&(formStack->stack[i - 1]), &(formStack->stack[i]))) {
             struct FormStack *tmp = malloc(sizeof(struct FormStack));
-            tmp->size = 1;
-            tmp->stack = &(formStack->stack[i]);
-            stacks[i] = tmp;
-
+            tmp->size = i - start;
+            tmp->stack = &(formStack->stack[start]);
+            stacks[*stacksNum] = tmp;
+            (*stacksNum)++;
+            start = i;
         }
     }
-    for (int i = 0; i < n; i++) {
+    struct FormStack *tmp = malloc(sizeof(struct FormStack));
+    tmp->size = n - start;
+    tmp->stack = &(formStack->stack[start]);
+    stacks[*stacksNum] = tmp;
+
+    (*stacksNum)++;
+    stacks = realloc(stacks, sizeof(struct FormStack*) * *stacksNum);
+
+    return stacks;
+}
+
+void showStacks(struct FormStack** stacks, int num) {
+    for (int i = 0;i < num; i++) {
+        printf("Стопка:%i\n", i);
         showFormStack(stacks[i]);
     }
-    printf("in-func:%i", (int)stacks);
-    return stacks;
+}
+void freeStacks(struct FormStack** stacks, int num) {
+    /*for (int i = 0;i < num; i++) { //Недопустимое освобождение?
+        freeFormStack(stacks[i]);
+    }*/
+    free(stacks);
 }
 

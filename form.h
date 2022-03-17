@@ -26,5 +26,7 @@ void showForm(struct Form form);
 void showFormStack(const struct FormStack* formStack);
 struct FormStack* sortFormStack(struct FormStack* formStack);
 struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum);
+void showStacks(struct FormStack** stacks, int num);
+void freeStacks(struct FormStack** stacks, int num);
 
 #endif //C1_FORM_H
