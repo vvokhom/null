@@ -1,14 +1,14 @@
 
-#include <stdlib.h>
-#include "input.h"
+
+#include "form.h"
 
 
 
 int main() {
-    struct Form form;
-    inputForm(&form);
-
-    printf("%s", form.address);
+    int n = inputInt(stdin);
+    struct FormStack* formStack = createFormStack(stdin, n);
+    showFormStack(formStack);
+    freeFormStack(formStack);
     return 0;
 }
 

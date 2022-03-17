@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "form.h"
+
 #ifndef C1_INPUT_H
 #define C1_INPUT_H
 
-struct Form* inputForm() ;
+char inputChar(FILE* file);
+char* inputString(FILE* file);
+int inputInt(FILE* file);
 
 #endif //C1_INPUT_H
