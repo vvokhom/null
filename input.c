@@ -15,7 +15,7 @@ char inputChar(FILE* file) {
 
 char* inputString(FILE* file) {
     struct buffer {
-        char *string;
+        char* string;
         size_t size;
         size_t capacity;
     } buf = {NULL, 0, 0};
