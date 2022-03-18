@@ -18,14 +18,14 @@ jobs:
 
       - name: run clang-format
         working-directory: ${{runner.workspace}}
-        run: find . -maxdepth 1 -type f -exec clang-format -i {} \
+        run: find . -maxdepth 1 -type f -exec clang-format -i {} \;
 
       - name: Install clang-tidy
         run: sudo apt install clang-tidy
 
       - name: run clang-format
         working-directory: ${{runner.workspace}}
-        run: find . -maxdepth 1 -type f -exec clang-tidy {} \
+        run: find . -maxdepth 1 -type f -exec clang-tidy {} \;
 
 
 
