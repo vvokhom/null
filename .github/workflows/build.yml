@@ -13,6 +13,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install clang-format
+        run: sudo apt install clang-format
+
+      - name: run clang-format
+        working-directory: ${{runner.workspace}}
+        run: find /some/directory -maxdepth 1 -type f -exec clang-format -i {} \
+
+      - name: Install clang-tidy
+        run: sudo apt install clang-tidy
+
+      - name: run clang-format
+        working-directory: ${{runner.workspace}}
+        run: find /some/directory -maxdepth 1 -type f -exec clang-tidy {} \
+
+
+
+
       - name: Configure CMake
         run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
 
@@ -36,4 +53,9 @@ jobs:
 
       - name: Valgrind Memcheck
         working-directory: ${{runner.workspace}}/build
-        run: valgrind basic_test
+        run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"
+
+      - name: Covearge
+        working-directory: ${{runner.workspace}}/build
+        run: gcov basic_test
+
