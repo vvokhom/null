@@ -31,6 +31,9 @@ jobs:
           name: test_results_xml
           path: ${{runner.workspace}}/build/test-results/**/*.xml
 
+      - name: Install Valgrind
+        run: sudo apt-get install valgrind
+
       - name: Valgrind Memcheck
         working-directory: ${{runner.workspace}}/build
         run: valgrind basic_test
