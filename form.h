@@ -24,6 +24,7 @@ struct FormStack* createFormStack(FILE* file, int n);
 void freeFormStack(struct FormStack* formStack);
 void showForm(struct Form form);
 void showFormStack(const struct FormStack* formStack);
+int isNext(const struct Form* elem1, const struct Form* elem2);
 struct FormStack* sortFormStack(struct FormStack* formStack);
 struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum);
 void showStacks(struct FormStack** stacks, int num);
