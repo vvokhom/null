@@ -32,5 +32,5 @@ jobs:
           path: ${{runner.workspace}}/build/test-results/**/*.xml
 
       - name: Valgrind Memcheck
-          working-directory: ${{runner.workspace}}/build
-          #run: valgrind basic_test
+        working-directory: ${{runner.workspace}}/build
+        run: valgrind basic_test
