@@ -18,7 +18,7 @@ jobs:
 
       - name: run clang-format
         working-directory: ${{runner.workspace}}
-        run: find -maxdepth 1 -type f -exec clang-format -i {} \;
+        run: find -maxdepth 1 -type f -exec clang-format {} \;
 
       - name: Install clang-tidy
         run: sudo apt install clang-tidy
@@ -48,8 +48,8 @@ jobs:
           name: test_results_xml
           path: ${{runner.workspace}}/build/test-results/**/*.xml
 
-      - name: Install Valgrind
-        run: sudo apt-get install valgrind
+      #- name: Install Valgrind
+      #  run: sudo apt-get install valgrind
 
       - name: Valgrind Memcheck
         working-directory: ${{runner.workspace}}/build
