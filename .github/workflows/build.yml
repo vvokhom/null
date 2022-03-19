@@ -48,17 +48,22 @@ jobs:
           name: test_results_xml
           path: ${{runner.workspace}}/build/test-results/**/*.xml
 
-      #- name: Install Valgrind
-      #  run: sudo apt-get install valgrind
+      - name: Install Valgrind
+        run: sudo apt install valgrind
 
-      #- name: Valgrind Memcheck
-      #  working-directory: ${{runner.workspace}}/build
-      #  run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"
-
-      - name: run tests
-          working-directory: ${{runner.workspace}}/build
-          run: basic_test
-      - name: Covearge
+      - name: Valgrind Memcheck
         working-directory: ${{runner.workspace}}/build
-        run: gcov basic_test
+        run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"\
+      - name: upload Valgrind review
+        uses: actions/upload-artifact@v3
+        with:
+          name: build/valgrind-review
+          path: valgrind-review.txt
+
+      #- name: run tests
+      #    working-directory: ${{runner.workspace}}/build
+      #    run: basic_test
+      #- name: Covearge
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: gcov basic_test
 
