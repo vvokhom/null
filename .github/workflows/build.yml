@@ -18,12 +18,12 @@ jobs:
 
       - name: run clang-format
         working-directory: ${{runner.workspace}}
-        run: find -maxdepth 1 -type f -exec clang-format {} \;
+        run: find -maxdepth 1 -type f -exec clang-format -i {} \;
 
       - name: Install clang-tidy
         run: sudo apt install clang-tidy
 
-      - name: run clang-format
+      - name: run clang-tidy
         working-directory: ${{runner.workspace}}
         run: find -maxdepth 1 -type f -exec clang-tidy {} \;
 
@@ -51,9 +51,9 @@ jobs:
       #- name: Install Valgrind
       #  run: sudo apt-get install valgrind
 
-      - name: Valgrind Memcheck
-        working-directory: ${{runner.workspace}}/build
-        run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"
+      #- name: Valgrind Memcheck
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"
 
       - name: Covearge
         working-directory: ${{runner.workspace}}/build
