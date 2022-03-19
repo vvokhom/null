@@ -55,6 +55,9 @@ jobs:
       #  working-directory: ${{runner.workspace}}/build
       #  run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"
 
+      - name: run tests
+          working-directory: ${{runner.workspace}}/build
+          run: basic_test
       - name: Covearge
         working-directory: ${{runner.workspace}}/build
         run: gcov basic_test
