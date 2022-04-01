@@ -21,12 +21,12 @@ add_executable(
         basic_test
         basic_test.cpp)
 
-add_compile_options(-fprofile-arcs -ftest-coverage)
 target_link_libraries(
         basic_test
         gtest_main
         form
 )
+#include(CodeCoverage)
 enable_testing()
 include(GoogleTest)
 gtest_discover_tests(basic_test)
