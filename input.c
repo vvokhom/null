@@ -13,7 +13,7 @@ char inputChar(FILE* file) {
     return c;
 }
 
-char* inputString(FILE* file) {
+char* createString(FILE* file) {
     struct buffer {
         char* string;
         size_t size;
@@ -49,20 +49,48 @@ char* inputString(FILE* file) {
     return buf.string;
 }
 
+void inputString(FILE* file, char* string, int length) {
+    int i = 0;
+    char c = '\0';
+    for (i = 0; i < length; i++) {
+        if(c = inputChar(file), c != EOF && c != '\n') {
+            string[i] = c;
+        } else {
+            string[i] = '\0';
+            break;
+        }
+
+    }
+
+
+}
+
 int inputInt(FILE* file) {
     char c = '\0';
     int result = 0;
     while (c = inputChar(file), c != EOF && c != '\n') {
         if (!(c >= '0' && c <= '9')) {
-            char *buf = inputString(file);
+            char *buf = createString(file);
             if (buf) {
                 free(buf);
             }
             return 0;
         }
+        if (result > INT_MAX / 10 ) {
+            printf("Too large number!");
+            result = 0;
+        }
         result = result * 10 + c - '0';
     }
     return result;
+}
+u_short inputShortInt(FILE* file) {
+    int num = inputInt(file);
+    if (num > USHRT_MAX) {
+        printf("Too large number!");
+        num = USHRT_MAX;
+    }
+    return (u_short)num;
 }
 
 

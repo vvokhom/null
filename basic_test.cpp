@@ -2,10 +2,10 @@
 
 
 extern "C" {
-#include "form.h"
+#include "data.h"
 }
 
-TEST(logic_test, form_comparison) {
+/*TEST(logic_test, form_comparison) {
     struct Form form1 = {1, "a", "a"};
     struct Form form2 = {2, "a", "a"};
 
@@ -70,7 +70,7 @@ TEST(input_test, numerical) {
 }
 TEST(input_test, text) {
     FILE* file = fopen("/home/vladimir/CLionProjects/HW/C1/null/test_files/text", "r");
-    char* str = inputString(file);
+    char* str = createString(file);
     EXPECT_EQ(str, "Lorem Ipsum Dolores");
     fclose(file);
 }

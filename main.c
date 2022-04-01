@@ -1,19 +1,14 @@
 
 
-#include "form.h"
+#include "data.h"
 
 
 
 int main() {
+    Employee* base;
     int n = inputInt(stdin);
-    struct FormStack* formStack = createFormStack(stdin, n);
-    int stacksNum;
-    struct FormStack** stacks = splitFormStack(formStack, &stacksNum);
-    showStacks(stacks, stacksNum);
-    free(formStack);
-    freeStacks(stacks, stacksNum);
-
-
+    base = createEmployeeBase(stdin, n);
+    showEmployeeBase(base, n);
     return 0;
 
 }

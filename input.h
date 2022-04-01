@@ -4,12 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
-#ifndef C1_INPUT_H
-#define C1_INPUT_H
+#ifndef C2_INPUT_H
+#define C2_INPUT_H
 
 char inputChar(FILE* file);
-char* inputString(FILE* file);
+char* createString(FILE* file);
+void inputString(FILE* file, char* string, int length);
 int inputInt(FILE* file);
+u_short inputShortInt(FILE* file);
 
-#endif //C1_INPUT_H
+#endif //C2_INPUT_H
