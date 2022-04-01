@@ -11,9 +11,10 @@ Employee* inputEmployee(FILE* file, Employee* employee) {
 
     inputString(file, employee->field, FIELD_LEN);*/
     sprintf(employee->field, "Account");
+    sprintf(employee->position, "Manager");
   employee->fName = "Bob";
     employee->sName = "Bebs";
-    inputString(file, employee->position, POSITION_LEN);
+    //inputString(file, employee->position, POSITION_LEN);
 
     //employee->age = inputShortInt(file);
 employee->age = 10;

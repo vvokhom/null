@@ -20,7 +20,7 @@ int compEmployee(const void* elem1, const void* elem2) {
     return tmp;
 }
 
-int sortEmployeeBase(Employee* base, size_t n) {
+void sortEmployeeBase(Employee* base, size_t n) {
     qsort(base, n, sizeof(Employee), compEmployee);
 }
 

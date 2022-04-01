@@ -13,7 +13,7 @@ typedef struct Report {
     int avgSalary;
 } Report;
 
-int sortEmployeeBase(Employee* base, size_t n);
+void sortEmployeeBase(Employee* base, size_t n);
 Report* makeReports(Employee* base, size_t n, size_t* reportsNum);
 void showReport(Report report);
 void showReports(Report* report, size_t n);
