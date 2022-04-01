@@ -13,20 +13,20 @@
 #define POSITION_LEN 8
 
 typedef struct Employee { // 40 байт, без лакун
-    char* fName;
+    char* fName;// Неоптимально по скорости; но я полагаю что обращения по имени/фамилии будут редки
     char* sName;
     char field[FIELD_LEN];
     char position[POSITION_LEN];
     u_short age;
-    u_short experience; // в месяцах
+    u_short experience;
     int salary;
 } Employee;
 
 Employee* inputEmployee(FILE* file, Employee* form);
-Employee* inputEmployeeBase(FILE* file, Employee* base, int n);
-Employee* createEmployeeBase(FILE* file, int n);
+Employee* inputEmployeeBase(FILE* file, Employee* base, size_t n);
+Employee* createEmployeeBase(FILE* file, size_t n);
 void showEmployee(const Employee* employee);
-void showEmployeeBase(const Employee* employeeBase, int n);
+void showEmployeeBase(const Employee* employeeBase, size_t n);
 
 
-#endif //C1_FORM_H
+#endif //C2_DATA_H

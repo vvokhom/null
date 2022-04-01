@@ -13,9 +13,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_library(data input.c input.h data.c data.h)
+
+add_subdirectory(report)
 add_executable(C2 main.c)
 
-target_link_libraries(C2 data)
+target_link_libraries(C2 st_report data)
 
 add_executable(
         basic_test
