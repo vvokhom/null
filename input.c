@@ -23,7 +23,7 @@ char* inputString(FILE* file) {
     while (c = inputChar(file), c != EOF && c != '\n') {
         if (buf.size + 1 >= buf.capacity) {
             size_t new_capacity = !buf.capacity ? 1 : buf.capacity * 2;
-            char *tmp = (char *)malloc((new_capacity + 1) * sizeof(char)); // Как ее освободить? считается утечкой?
+            char *tmp = (char *)malloc((new_capacity + 1) * sizeof(char));
             if (!tmp) {
                 if (buf.string) {
                     free(buf.string);
