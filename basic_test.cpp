@@ -5,13 +5,10 @@ extern "C" {
 #include "data.h"
 }
 
-/*TEST(logic_test, form_comparison) {
-    struct Form form1 = {1, "a", "a"};
-    struct Form form2 = {2, "a", "a"};
-
-    EXPECT_TRUE(isNext(&form1, &form2));
-}
 TEST(logic_test, sorting) {
+
+}
+/*TEST(logic_test, sorting) {
     const size_t formStackSize = sizeof(struct FormStack);
     const size_t formSize = sizeof(struct Form);
     struct Form formsUnsorted[3];
@@ -32,7 +29,7 @@ TEST(logic_test, sorting) {
     EXPECT_TRUE(memcmp(&(formStackUnsorted.stack[2]), &(formStackSorted.stack[2]), formSize) == 0);
 
 }
-
+/*
 TEST(logic_test, splitting) {
     const size_t formStackSize = sizeof(struct FormStack);
     const size_t formSize = sizeof(struct Form);

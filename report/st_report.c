@@ -29,14 +29,38 @@ Report* makeReports(Employee* base, size_t n, size_t* reportsNum) {
     *reportsNum = 0;
     int employeeCount = 0;
     int totalSalary = 0;
-    Report* reports = (Report*)malloc(sizeof(Report) * n); //TODO: динамическое выделение памяти;
+
+    struct buffer {
+        Report* reports;
+        size_t size;
+        size_t capacity;
+    } buf =  {NULL, 0, 0};
+
     for (int i = 1;  i < n; i++) {
         totalSalary += base[i - 1].salary;
         employeeCount++;
         if (compEmployee(&(base[i - 1]), &(base[i])) != 0) {
-            reports[*reportsNum].experience = base[i-1].experience;
-            strcpy(reports[*reportsNum].position, base[i - 1].position);
-            reports[*reportsNum].avgSalary = totalSalary / employeeCount;
+
+            if (buf.size + 1 >= buf.capacity) { //??? !!! ??? Еще один элемент?
+                size_t new_capacity = !buf.capacity ? 1 : buf.capacity * 2;
+                char *tmp = (char *)malloc((new_capacity + 1) * sizeof(char));
+                if (!tmp) {
+                    if (buf.reports) {
+                        free(buf.reports);
+                    }
+                    exit(137);
+                }
+                if (buf.reports) {
+                    tmp = memcpy(tmp, buf.reports, buf.capacity);
+                    free(buf.reports);
+                }
+                buf.reports = tmp;
+                buf.capacity = new_capacity;
+            }
+
+            buf.reports[*reportsNum].experience = base[i-1].experience;
+            strcpy(buf.reports[*reportsNum].position, base[i - 1].position);
+            buf.reports[*reportsNum].avgSalary = totalSalary / employeeCount;
             totalSalary = 0;
             employeeCount = 0;
             (*reportsNum)++;
@@ -44,13 +68,12 @@ Report* makeReports(Employee* base, size_t n, size_t* reportsNum) {
     }
     totalSalary += base[n - 1].salary;
     employeeCount++;
-    reports[*reportsNum].experience = base[n - 1].experience;
-    strcpy(reports[*reportsNum].position, base[n - 1].position);
-    reports[*reportsNum].avgSalary = totalSalary / employeeCount;
+    buf.reports[*reportsNum].experience = base[n - 1].experience;
+    strcpy(buf.reports[*reportsNum].position, base[n - 1].position);
+    buf.reports[*reportsNum].avgSalary = totalSalary / employeeCount;
 
     (*reportsNum)++;
-    reports = (Report*)realloc(reports, sizeof(Report) * *reportsNum);
 
-    return reports;
+    return buf.reports;
 }
 
