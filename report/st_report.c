@@ -12,7 +12,7 @@ struct buffer {
     size_t capacity;
 };
 
-void addToBuffer(Report report,struct buffer* buf) {
+void extendBuffer(struct buffer* buf) {
     if (buf->size + 1 >= buf->capacity) {
         size_t new_capacity = !buf->capacity ? 1 : buf->capacity * 2;
         Report* tmp = (Report*)malloc((new_capacity + 1) * sizeof(Report));
@@ -23,29 +23,7 @@ void addToBuffer(Report report,struct buffer* buf) {
             exit(137);
         }
         if (buf->reports) {
-            tmp = memcpy(tmp, buf->reports, buf->capacity);
-            free(buf->reports);
-        }
-        buf->reports = tmp;
-        buf->capacity = new_capacity;
-    }
-
-    memcpy(&(buf->reports[buf->size]), &report, sizeof(Report));
-    buf->size++;
-}
-
-void addNullToBuffer(struct buffer* buf) {
-    if (buf->size + 1 >= buf->capacity) {
-        size_t new_capacity = !buf->capacity ? 1 : buf->capacity * 2;
-        Report* tmp = (Report*)malloc((new_capacity + 1) * sizeof(Report));
-        if (!tmp) {
-            if (buf->reports) {
-                free(buf->reports);
-            }
-            exit(137);
-        }
-        if (buf->reports) {
-            tmp = memcpy(tmp, buf->reports, buf->capacity);
+            tmp = memcpy(tmp, buf->reports, buf->capacity * sizeof(Report));
             free(buf->reports);
         }
         buf->reports = tmp;
@@ -54,6 +32,15 @@ void addNullToBuffer(struct buffer* buf) {
 
     buf->size++;
 }
+
+void addToBuffer(Report* report,struct buffer* buf) {
+    extendBuffer(buf);
+
+    memcpy(&(buf->reports[buf->size]), report, sizeof(Report));
+    buf->size++;
+}
+
+
 
 
 int compPosition(const Employee* elem1, const Employee* elem2) {
@@ -91,7 +78,7 @@ Report* makeReports(Employee* base, size_t n, size_t* reportsNum) {
         if (compEmployee(&(base[i - 1]), &(base[i])) != 0) {
 
 
-            addNullToBuffer(&buf);
+            extendBuffer(&buf);
 
             buf.reports[*reportsNum].experience = base[i-1].experience;
             strcpy(buf.reports[*reportsNum].position, base[i - 1].position);
@@ -103,7 +90,7 @@ Report* makeReports(Employee* base, size_t n, size_t* reportsNum) {
     }
     totalSalary += base[n - 1].salary;
     employeeCount++;
-    addNullToBuffer(&buf);
+    extendBuffer(&buf);
     buf.reports[*reportsNum].experience = base[n - 1].experience;
     strcpy(buf.reports[*reportsNum].position, base[n - 1].position);
     buf.reports[*reportsNum].avgSalary = totalSalary / employeeCount;
