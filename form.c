@@ -20,7 +20,7 @@ void extendBuffer(struct buffer* buf) {
             exit(137);
         }
         if (buf->stacks) {
-            tmp = memcpy(tmp, buf->stacks, buf->capacity);
+            tmp = memcpy(tmp, buf->stacks, buf->capacity * sizeof(struct FormStack*));
             free(buf->stacks);
         }
         buf->stacks = tmp;
@@ -121,8 +121,6 @@ struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum) {
     for (int i =1;  i < n; i++) {
 
 
-
-
         if (!isNext(&(formStack->stack[i - 1]), &(formStack->stack[i]))) {
             struct FormStack* new = (struct FormStack*)malloc(sizeof(struct FormStack));
             new->size = i - start;
@@ -134,10 +132,10 @@ struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum) {
             start = i;
         }
     }
-    struct FormStack* tmp = (struct FormStack*)malloc(sizeof(struct FormStack));
-    tmp->size = n - start;
-    tmp->stack = &(formStack->stack[start]);
-    buf.stacks[*stacksNum] = tmp;
+    struct FormStack* new = (struct FormStack*)malloc(sizeof(struct FormStack));
+    new->size = n - start;
+    new->stack = &(formStack->stack[start]);
+    addToBuffer(&new, &buf);
 
     (*stacksNum)++;
 
