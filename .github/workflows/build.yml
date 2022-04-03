@@ -1,0 +1,69 @@
+name: build_test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install clang-format
+        run: sudo apt install clang-format
+
+      - name: run clang-format
+        working-directory: ${{runner.workspace}}
+        run: find -maxdepth 1 -type f -exec clang-format -i {} \;
+
+      - name: Install clang-tidy
+        run: sudo apt install clang-tidy
+
+      - name: run clang-tidy
+        working-directory: ${{runner.workspace}}
+        run: find -maxdepth 1 -type f -exec clang-tidy {} \;
+
+
+
+
+      - name: Configure CMake
+        run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build .
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results_xml
+          path: ${{runner.workspace}}/build/test-results/**/*.xml
+
+      - name: Install Valgrind
+        run: sudo apt install valgrind
+
+      - name: Valgrind Memcheck
+        working-directory: ${{runner.workspace}}/build
+        run: valgrind basic_test --leak-check=yes --log-file="valgrind-review.txt"\
+      - name: upload Valgrind review
+        uses: actions/upload-artifact@v3
+        with:
+          name: build/valgrind-review
+          path: valgrind-review.txt
+
+      #- name: run tests
+      #    working-directory: ${{runner.workspace}}/build
+      #    run: basic_test
+      #- name: Covearge
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: gcov basic_test
+
