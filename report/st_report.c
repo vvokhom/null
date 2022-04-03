@@ -5,6 +5,57 @@
 
 #include <stdlib.h>
 
+
+struct buffer {
+    Report* reports;
+    size_t size;
+    size_t capacity;
+};
+
+void addToBuffer(Report report,struct buffer* buf) {
+    if (buf->size + 1 >= buf->capacity) {
+        size_t new_capacity = !buf->capacity ? 1 : buf->capacity * 2;
+        Report* tmp = (Report*)malloc((new_capacity + 1) * sizeof(Report));
+        if (!tmp) {
+            if (buf->reports) {
+                free(buf->reports);
+            }
+            exit(137);
+        }
+        if (buf->reports) {
+            tmp = memcpy(tmp, buf->reports, buf->capacity);
+            free(buf->reports);
+        }
+        buf->reports = tmp;
+        buf->capacity = new_capacity;
+    }
+
+    memcpy(&(buf->reports[buf->size]), &report, sizeof(Report));
+    buf->size++;
+}
+
+void addNullToBuffer(struct buffer* buf) {
+    if (buf->size + 1 >= buf->capacity) {
+        size_t new_capacity = !buf->capacity ? 1 : buf->capacity * 2;
+        Report* tmp = (Report*)malloc((new_capacity + 1) * sizeof(Report));
+        if (!tmp) {
+            if (buf->reports) {
+                free(buf->reports);
+            }
+            exit(137);
+        }
+        if (buf->reports) {
+            tmp = memcpy(tmp, buf->reports, buf->capacity);
+            free(buf->reports);
+        }
+        buf->reports = tmp;
+        buf->capacity = new_capacity;
+    }
+
+    buf->size++;
+}
+
+
 int compPosition(const Employee* elem1, const Employee* elem2) {
     return strcmp(elem1->position, elem2->position);
 }
@@ -30,33 +81,17 @@ Report* makeReports(Employee* base, size_t n, size_t* reportsNum) {
     int employeeCount = 0;
     int totalSalary = 0;
 
-    struct buffer {
-        Report* reports;
-        size_t size;
-        size_t capacity;
-    } buf =  {NULL, 0, 0};
+    struct buffer buf = {NULL, 0, 0};
+
 
     for (int i = 1;  i < n; i++) {
         totalSalary += base[i - 1].salary;
         employeeCount++;
+
         if (compEmployee(&(base[i - 1]), &(base[i])) != 0) {
 
-            if (buf.size + 1 >= buf.capacity) { //??? !!! ??? Еще один элемент?
-                size_t new_capacity = !buf.capacity ? 1 : buf.capacity * 2;
-                char *tmp = (char *)malloc((new_capacity + 1) * sizeof(char));
-                if (!tmp) {
-                    if (buf.reports) {
-                        free(buf.reports);
-                    }
-                    exit(137);
-                }
-                if (buf.reports) {
-                    tmp = memcpy(tmp, buf.reports, buf.capacity);
-                    free(buf.reports);
-                }
-                buf.reports = tmp;
-                buf.capacity = new_capacity;
-            }
+
+            addNullToBuffer(&buf);
 
             buf.reports[*reportsNum].experience = base[i-1].experience;
             strcpy(buf.reports[*reportsNum].position, base[i - 1].position);
@@ -68,6 +103,7 @@ Report* makeReports(Employee* base, size_t n, size_t* reportsNum) {
     }
     totalSalary += base[n - 1].salary;
     employeeCount++;
+    addNullToBuffer(&buf);
     buf.reports[*reportsNum].experience = base[n - 1].experience;
     strcpy(buf.reports[*reportsNum].position, base[n - 1].position);
     buf.reports[*reportsNum].avgSalary = totalSalary / employeeCount;
