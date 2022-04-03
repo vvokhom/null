@@ -3,6 +3,42 @@
 //
 #include "form.h"
 
+struct buffer {
+    struct FormStack** stacks;
+    size_t size;
+    size_t capacity;
+};
+
+void extendBuffer(struct buffer* buf) {
+    if (buf->size + 1 >= buf->capacity) {
+        size_t new_capacity = !buf->capacity ? 1 : buf->capacity * 2;
+        struct FormStack** tmp = (struct FormStack**)malloc((new_capacity + 1) * sizeof(struct FormStack*));
+        if (!tmp) {
+            if (buf->stacks) {
+                free(buf->stacks);
+            }
+            exit(137);
+        }
+        if (buf->stacks) {
+            tmp = memcpy(tmp, buf->stacks, buf->capacity);
+            free(buf->stacks);
+        }
+        buf->stacks = tmp;
+        buf->capacity = new_capacity;
+    }
+
+    buf->size++;
+}
+
+
+void addToBuffer(struct FormStack** stack, struct buffer* buf) {
+    extendBuffer(buf);
+
+    memcpy(&(buf->stacks[buf->size - 1]), stack, sizeof(struct FormStack*));
+
+}
+
+
 struct Form* inputForm(FILE* file, struct Form* form) {
 
     form->id = inputInt(file);
@@ -81,11 +117,7 @@ struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum) {
     int n = formStack->size;
     int start = 0;
     sortFormStack(formStack);
-    struct buffer {
-        struct FormStack** stacks;
-        size_t size;
-        size_t capacity;
-    } buf =  {NULL, 0, 0};
+    struct buffer buf =  {NULL, 0, 0};
     for (int i =1;  i < n; i++) {
 
 
@@ -96,24 +128,8 @@ struct FormStack** splitFormStack(struct FormStack* formStack, int* stacksNum) {
             new->size = i - start;
             new->stack = &(formStack->stack[start]);
 
-            if (buf.size + 1 >= buf.capacity) {
-                size_t new_capacity = !buf.capacity ? 1 : buf.capacity * 2;
-                struct FormStack **tmp = (struct FormStack **) malloc((new_capacity + 1) * sizeof(struct FormStack *));
-                if (!tmp) {
-                    if (buf.stacks) {
-                        free(buf.stacks);
-                    }
-                    exit(137);
-                }
-                if (buf.stacks) {
-                    tmp = memcpy(tmp, buf.stacks, buf.capacity);
-                    free(buf.stacks);
-                }
-                buf.stacks = tmp;
-                buf.capacity = new_capacity;
-            }
+            addToBuffer(&new, &buf);
 
-            buf.stacks[*stacksNum] = new;
             (*stacksNum)++;
             start = i;
         }
