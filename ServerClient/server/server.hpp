@@ -9,6 +9,9 @@ typedef const boost::system::error_code boost_error;
 
 enum class State {
     Login,
+    Menu,
+    Ready,
+    Play,
     Echo,
     End
 };
@@ -28,6 +31,7 @@ private:
     size_t id = 0;
     ip::tcp::socket socket_;
     clients_map* map_;
+    clients_map* playroom;
     State state;
 
     Client(io_context &io_context_) : socket_(io_context_) {}
@@ -36,7 +40,7 @@ private:
     void input_analysis(boost_error &error, size_t bytes);
     void on_login();
     void connection_close();
-    void send_to_client();
+    void ready_to_play();
 
     void dummy(boost_error &error, size_t bytes) {}
 
@@ -44,7 +48,7 @@ public:
     static ptr create(io_context &io_context_);
     ip::tcp::socket& socket();
     size_t get_id();
-    void run(clients_map *map, size_t num);
+    void run(clients_map *map, clients_map *_playroom, size_t num);
 };
 
 
@@ -54,6 +58,7 @@ private:
     io_context &io_context_;
     ip::tcp::acceptor acceptor_;
     Client::clients_map clients;
+    Client::clients_map playroom;
     steady_timer timer;
     size_t client_num = 0;
 

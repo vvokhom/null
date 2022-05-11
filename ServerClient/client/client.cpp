@@ -1,8 +1,10 @@
 #include "client.hpp"
 
 using namespace boost::asio;
+using json = nlohmann::json;
 #define IO_BIND(a)  boost::bind(&Client::a, this, placeholders::error, placeholders::bytes_transferred)
 #define CL_BIND(a)  boost::bind(&Client::a, this, placeholders::error)
+
 
 std::string to_string(streambuf &buf) {
     std::ostringstream out;
@@ -62,12 +64,22 @@ void Client::do_write(boost_error &error, size_t bytes) {
             callback = IO_BIND(on_login);
             break; 
         }
+        case State::Play: {
+            callback = IO_BIND(dummy);
+            check = GameInfo.dump();
+            break; 
+        }
+        case State::Menu: {
+            if (check == "play\n") {
+                callback = IO_BIND(ready_to_play);
+            }
+            break; 
+        }
         case State::Echo: {
             callback = IO_BIND(on_echo);
             break; 
         } 
     }
-
     async_write(socket_, buffer(check), callback);
 }
 
@@ -77,11 +89,31 @@ void Client::on_login(boost_error &error, size_t bytes) {
         return;
     }
     
-    state = State::Echo;
+    state = State::Menu;
+    // state = State::Echo;
     get_client_input();
 }
 
 void Client::on_echo(boost_error &error, size_t bytes) {
+    if (error || bytes == 0) {
+        std::cerr << "WRITE ERROR: " << error.message() << "\n";
+        return;
+    }
+    do_read(IO_BIND(got_response));
+    get_client_input();
+}
+
+void Client::ready_to_play(boost_error &error, size_t bytes) {
+    if (error || bytes == 0) {
+        std::cerr << "WRITE ERROR: " << error.message() << "\n";
+        return;
+    }
+    state = State::Ready;
+    do_read(IO_BIND(got_response));
+    get_client_input();
+}
+
+void Client::dummy(boost_error &error, size_t bytes) {
     if (error || bytes == 0) {
         std::cerr << "WRITE ERROR: " << error.message() << "\n";
         return;
@@ -114,6 +146,17 @@ void Client::got_response(boost_error &error, size_t bytes) {
 
     std::string response(output, bytes);
     std::cout << response << '\n';
+
+    if ( state == State::Play ) {
+        GameInfo = json::parse(response);
+        std::cout << std::setw(4) << GameInfo << "\n\n";
+    }
+
+    if ( response != "Sorry, the game has started" && state == State::Ready ) {
+        GameInfo = json::parse(response);
+        state = State::Play;
+    }
+
 
     do_read(IO_BIND(got_response));
 }

@@ -1,8 +1,10 @@
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp>
 #include <iostream>
+#include "json.hpp"
 
 using namespace boost::asio;
+using json = nlohmann::json;
 
 typedef const boost::system::error_code boost_error;
 
@@ -11,6 +13,9 @@ constexpr char default_ip[20] = "127.0.0.1";
 
 enum class State {
     Login,
+    Menu,
+    Ready,
+    Play,
     Echo,
     End
 };
@@ -22,6 +27,7 @@ private:
     ip::tcp::socket socket_;
     char output[256];
     streambuf read_buf;
+    json GameInfo;
 
     void connect(std::string &ip, unsigned int &port);
     void on_connect(boost_error &error);
@@ -31,6 +37,8 @@ private:
     void on_login(boost_error &error, size_t bytes);
     void on_echo(boost_error &error, size_t bytes);
     void got_response(boost_error &error, size_t bytes);
+    void ready_to_play(boost_error &error, size_t bytes);
+    void dummy(boost_error &error, size_t bytes);
 
 public:
     Client(io_context &context, std::string &ip, unsigned int &port) : input_stream(context, STDIN_FILENO), socket_(context) {
