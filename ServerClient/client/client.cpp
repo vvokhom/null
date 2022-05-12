@@ -11,6 +11,7 @@ std::string to_string(streambuf &buf) {
     out << &buf;
     return out.str();
 }
+
 void clear(char* arr) {
     std::fill(arr, arr + sizeof(arr), 0);
 }
@@ -34,9 +35,6 @@ void Client::get_client_input() {
             std::cout << "Enter your login\n";
             break;
         }
-        case State::Echo: {
-            break;
-        }
     }
     async_read_until(input_stream, read_buf, '\n', IO_BIND(do_write));
 }
@@ -48,12 +46,9 @@ void Client::do_write(boost_error &error, size_t bytes) {
     }
 
     std::string check = to_string(read_buf);
+
     if (check == "end\n") {
-        std::cout << "ENDING\n";
-        write(socket_, buffer(check));
-        socket_.shutdown(ip::tcp::socket::shutdown_both);
-        socket_.close();
-        state = State::End;
+        close_connect();
         return;
     }
 
@@ -75,10 +70,6 @@ void Client::do_write(boost_error &error, size_t bytes) {
             }
             break; 
         }
-        case State::Echo: {
-            callback = IO_BIND(on_echo);
-            break; 
-        } 
     }
     async_write(socket_, buffer(check), callback);
 }
@@ -90,16 +81,8 @@ void Client::on_login(boost_error &error, size_t bytes) {
     }
     
     state = State::Menu;
-    // state = State::Echo;
-    get_client_input();
-}
-
-void Client::on_echo(boost_error &error, size_t bytes) {
-    if (error || bytes == 0) {
-        std::cerr << "WRITE ERROR: " << error.message() << "\n";
-        return;
-    }
-    do_read(IO_BIND(got_response));
+    // std::string check = login;
+    // async_write(socket_, buffer(check), dummy);
     get_client_input();
 }
 
@@ -109,6 +92,8 @@ void Client::ready_to_play(boost_error &error, size_t bytes) {
         return;
     }
     state = State::Ready;
+    // std::string check = "play";
+    // async_write(socket_, buffer(check), dummy);
     do_read(IO_BIND(got_response));
     get_client_input();
 }
@@ -157,6 +142,14 @@ void Client::got_response(boost_error &error, size_t bytes) {
         state = State::Play;
     }
 
-
     do_read(IO_BIND(got_response));
+}
+
+void Client::close_connect() {
+    std::cout << "ENDING\n";
+    std::string check = "end";
+    write(socket_, buffer(check));
+    socket_.shutdown(ip::tcp::socket::shutdown_both);
+    socket_.close();
+    state = State::End;
 }

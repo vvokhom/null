@@ -16,7 +16,6 @@ enum class State {
     Menu,
     Ready,
     Play,
-    Echo,
     End
 };
 
@@ -35,10 +34,10 @@ private:
     void do_write(boost_error &error, size_t bytes);
     void do_read(std::function<void(boost_error, size_t)> callback);
     void on_login(boost_error &error, size_t bytes);
-    void on_echo(boost_error &error, size_t bytes);
     void got_response(boost_error &error, size_t bytes);
     void ready_to_play(boost_error &error, size_t bytes);
     void dummy(boost_error &error, size_t bytes);
+    void close_connect();
 
 public:
     Client(io_context &context, std::string &ip, unsigned int &port) : input_stream(context, STDIN_FILENO), socket_(context) {

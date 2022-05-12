@@ -4,7 +4,10 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
+#include <json.hpp>
+
 using namespace boost::asio;
+using json = nlohmann::json;
 typedef const boost::system::error_code boost_error;
 
 enum class State {
@@ -12,12 +15,10 @@ enum class State {
     Menu,
     Ready,
     Play,
-    Echo,
     End
 };
 
 constexpr unsigned int default_port = 49001;
-
 
 class Client: public boost::enable_shared_from_this<Client> {
 public:
@@ -41,6 +42,8 @@ private:
     void on_login();
     void connection_close();
     void ready_to_play();
+    json create_game_info();
+    json update_game_info(json info);
 
     void dummy(boost_error &error, size_t bytes) {}
 
@@ -48,6 +51,7 @@ public:
     static ptr create(io_context &io_context_);
     ip::tcp::socket& socket();
     size_t get_id();
+    std::string get_state();
     void run(clients_map *map, clients_map *_playroom, size_t num);
 };
 
