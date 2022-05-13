@@ -1,6 +1,0 @@
-/home/leroy/Technopark/null/build/CMakeFiles/client.dir
-/home/leroy/Technopark/null/build/CMakeFiles/client.out.dir
-/home/leroy/Technopark/null/build/CMakeFiles/server.dir
-/home/leroy/Technopark/null/build/CMakeFiles/server.out.dir
-/home/leroy/Technopark/null/build/CMakeFiles/edit_cache.dir
-/home/leroy/Technopark/null/build/CMakeFiles/rebuild_cache.dir
