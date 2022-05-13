@@ -98,6 +98,18 @@ void Client::ready_to_play(boost_error &error, size_t bytes) {
     get_client_input();
 }
 
+void Client::send_game_info(boost_error &error, size_t bytes) {
+    if (error || bytes == 0) {
+        std::cerr << "WRITE ERROR: " << error.message() << "\n";
+        return;
+    }
+
+    std::string check = GameInfo.dump();
+    async_write(socket_, buffer(check), IO_BIND(dummy));
+    do_read(IO_BIND(got_response));
+    // get_client_input();
+}
+
 void Client::dummy(boost_error &error, size_t bytes) {
     if (error || bytes == 0) {
         std::cerr << "WRITE ERROR: " << error.message() << "\n";

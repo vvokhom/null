@@ -38,6 +38,7 @@ private:
     void ready_to_play(boost_error &error, size_t bytes);
     void dummy(boost_error &error, size_t bytes);
     void close_connect();
+    void send_game_info(boost_error &error, size_t bytes);
 
 public:
     Client(io_context &context, std::string &ip, unsigned int &port) : input_stream(context, STDIN_FILENO), socket_(context) {

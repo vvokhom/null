@@ -221,7 +221,7 @@ json Client::create_game_info() {
 json Client::update_game_info(json info) {
     int shift = 2 + rand() % (12);
     int pos = info[login]["Position"];
-    if (pos + shift > MAPP_SIZE) {
+    if (pos + shift >= MAPP_SIZE) {
         int money = info[login]["Money"];
         info[login]["Money"] = money + 200;
     }
