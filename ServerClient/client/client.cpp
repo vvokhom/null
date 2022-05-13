@@ -26,64 +26,64 @@ void Client::on_connect(boost_error &error) {
         std::cerr << "CONNECTION ERROR: " << error.message() << "\n";
         return;
     }
-    get_client_input();
+    //get_client_input();
 }
 
-void Client::get_client_input() {
-    switch (state) {
-        case State::Login: {
-            std::cout << "Enter your login\n";
-            break;
-        }
-    }
-    async_read_until(input_stream, read_buf, '\n', IO_BIND(do_write));
-}
+// void Client::get_client_input() {
+//     switch (state) {
+//         case State::Login: {
+//             std::cout << "Enter your login\n";
+//             break;
+//         }
+//     }
+//     async_read_until(input_stream, read_buf, '\n', IO_BIND(do_write));
+// }
 
-void Client::do_write(boost_error &error, size_t bytes) {
-    if (error || bytes == 0) {
-        std::cerr << "ERROR READING FROM CLIENT: " << error.message() << "\n";
-        return;
-    }
+// void Client::do_write(boost_error &error, size_t bytes) {
+//     if (error || bytes == 0) {
+//         std::cerr << "ERROR READING FROM CLIENT: " << error.message() << "\n";
+//         return;
+//     }
 
-    std::string check = to_string(read_buf);
+//     std::string check = to_string(read_buf);
 
-    if (check == "end\n") {
-        close_connect();
-        return;
-    }
+//     if (check == "end\n") {
+//         close_connect();
+//         return;
+//     }
 
-    std::function<void(boost_error, size_t)> callback;
+//     std::function<void(boost_error, size_t)> callback;
         
-    switch (state) {
-        case State::Login: {
-            callback = IO_BIND(on_login);
-            break; 
-        }
-        case State::Play: {
-            callback = IO_BIND(dummy);
-            check = GameInfo.dump();
-            break; 
-        }
-        case State::Menu: {
-            if (check == "play\n") {
-                callback = IO_BIND(ready_to_play);
-            }
-            break; 
-        }
-    }
-    async_write(socket_, buffer(check), callback);
-}
+//     switch (state) {
+//         case State::Login: {
+//             callback = IO_BIND(on_login);
+//             break; 
+//         }
+//         case State::Play: {
+//             callback = IO_BIND(dummy);
+//             check = GameInfo.dump();
+//             break; 
+//         }
+//         case State::Menu: {
+//             if (check == "play\n") {
+//                 callback = IO_BIND(ready_to_play);
+//             }
+//             break; 
+//         }
+//     }
+//     async_write(socket_, buffer(check), callback);
+// }
 
-void Client::on_login(boost_error &error, size_t bytes) {
+void Client::on_login(boost_error &error, size_t bytes, std::string login) {
     if (error || bytes == 0) {
         std::cerr << "WRITE ERROR: " << error.message() << "\n";
         return;
     }
     
     state = State::Menu;
-    // std::string check = login;
-    // async_write(socket_, buffer(check), dummy);
-    get_client_input();
+    std::string check = login;
+    async_write(socket_, buffer(check), IO_BIND(dummy));
+    // get_client_input();
 }
 
 void Client::ready_to_play(boost_error &error, size_t bytes) {
@@ -92,10 +92,10 @@ void Client::ready_to_play(boost_error &error, size_t bytes) {
         return;
     }
     state = State::Ready;
-    // std::string check = "play";
-    // async_write(socket_, buffer(check), dummy);
+    std::string check = "play";
+    async_write(socket_, buffer(check), IO_BIND(dummy));
     do_read(IO_BIND(got_response));
-    get_client_input();
+    //get_client_input();
 }
 
 void Client::send_game_info(boost_error &error, size_t bytes) {
@@ -116,7 +116,7 @@ void Client::dummy(boost_error &error, size_t bytes) {
         return;
     }
     do_read(IO_BIND(got_response));
-    get_client_input();
+    // get_client_input();
 }
 
 void Client::do_read(std::function<void(boost_error, size_t)> callback) {

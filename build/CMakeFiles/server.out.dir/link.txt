@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -rdynamic CMakeFiles/server.out.dir/ServerClient/server/main.cpp.o -o server.out  libserver.a 
