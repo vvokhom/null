@@ -219,6 +219,7 @@ json Client::create_game_info() {
 }
 
 json Client::update_game_info(json info) {
+    // Меняем позицию игрока
     int shift = 2 + rand() % (12);
     int pos = info[login]["Position"];
     if (pos + shift >= MAPP_SIZE) {
