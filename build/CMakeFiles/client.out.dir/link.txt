@@ -1,1 +1,0 @@
-/usr/bin/c++  -pthread -rdynamic CMakeFiles/client.out.dir/ServerClient/client/main.cpp.o -o client.out  libclient.a 
