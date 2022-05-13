@@ -1,9 +1,5 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_MAINWINDOW_H
-#define NULL_MAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include "screensfactory.h"
 #include "fragmentnavigator.h"
@@ -30,5 +26,4 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 };
-
-#endif //NULL_MAINWINDOW_H
+#endif // MAINWINDOW_H

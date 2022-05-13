@@ -1,22 +1,29 @@
-//
-// Created by vladimir on 15.04.22.
-//
+#ifndef ABSTRACTSCREENSFACTORY_H
+#define ABSTRACTSCREENSFACTORY_H
 
-#ifndef NULL_ABSTRACTSCREENSFACTORY_H
-#define NULL_ABSTRACTSCREENSFACTORY_H
+#include "abstractfragment.h"
 
 #include <QString>
 
-namespace screens {
+/*namespace screens {
     enum class Tag{
         kOptions,
         kGame,
         kMain,
         kWaiting,
         kCreating
-    };
-}
 
+    };
+    //obsolete:
+    static const QString OPTIONS_TAG = "options";
+    static const QString GAME_TAG = "game";
+    static const QString MAIN_TAG = "main";
+    static const QString WAITING_ROOM_TAG = "options";
+    //static const QString GAME_TAG = "game";
+    //static const QString MAIN_TAG = "main";
+
+}
+*/
 class AbstractScreensFactory {
 public:
     AbstractScreensFactory();
@@ -24,5 +31,6 @@ public:
 
     virtual AbstractFragment* create(QString tag) = 0;
     virtual QString createStart() = 0;
+};
 
-#endif //NULL_ABSTRACTSCREENSFACTORY_H
+#endif // ABSTRACTSCREENSFACTORY_H

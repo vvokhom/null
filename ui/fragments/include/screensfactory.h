@@ -1,9 +1,5 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_SCREENSFACTORY_H
-#define NULL_SCREENSFACTORY_H
+#ifndef SCREENSFACTORY_H
+#define SCREENSFACTORY_H
 
 #include "abstractscreensfactory.h"
 
@@ -15,14 +11,21 @@
 
 
 namespace screens {
-    enum Tag{
-         kOptions,
-         kGame,
-         kMain,
-         kWaiting,
-         kCreating
-     };
+   /*enum Tag{
+        kOptions,
+        kGame,
+        kMain,
+        kWaiting,
+        kCreating
 
+    };*/
+    //obsolete:
+    static const QString OPTIONS_TAG = "options";
+    static const QString GAME_TAG = "game";
+    static const QString MAIN_TAG = "main";
+    static const QString WAITING_TAG = "waiting";
+    static const QString CREATING_TAG = "creating";
+    //static const QString MAIN_TAG = "main";
 
 }
 
@@ -31,8 +34,8 @@ public:
     ScreensFactory();
     ~ScreensFactory();
 
-    AbstractFragment* create(screens::Tag tag) override;
+    AbstractFragment* create(QString tag) override;
     QString createStart() override;
 };
 
-#endif //NULL_SCREENSFACTORY_H
+#endif // SCREENSFACTORY_H

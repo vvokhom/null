@@ -1,9 +1,5 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_CREATINGFRAGMENT_H
-#define NULL_CREATINGFRAGMENT_H
+#ifndef CREATINGFRAGMENT_H
+#define CREATINGFRAGMENT_H
 
 #include "abstractfragment.h"
 #include "screensfactory.h"
@@ -18,20 +14,18 @@ public:
     CreatingFragment();
     ~CreatingFragment();
 
-    void createGame(int playerMax, QString roomName)
-
 public slots:
     void onBackPressed();
-    void onCreatePressed();
+    //void onStartPressed();
+    //void onCancelPressed();
 
 private:
-    QGroupBox *layout;
-    QLineEdit *roomName;
-    QLineEdit *playerMax;
     QPushButton *backButton;
     QLabel *roomID;
-    QPushButton *createButton
-
+    QLabel *playersCount;
+    //QPushButton *StartButton
+    //QPushButton *cancelButton
 };
 
-#endif //NULL_CREATINGFRAGMENT_H
+
+#endif // CREATINGFRAGMENT_H

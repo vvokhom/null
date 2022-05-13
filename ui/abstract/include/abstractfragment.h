@@ -1,25 +1,20 @@
-    //
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_ABSTRACTFRAGMENT_H
-#define NULL_ABSTRACTFRAGMENT_H
+    #ifndef ABSTRACTFRAGMENT_H
+#define ABSTRACTFRAGMENT_H
 
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QWidget>
 
-
 class AbstractFragment: public QFrame {
     Q_OBJECT
 
-    signals:
-        void back();
+signals:
+    void back();
 
-        void navigateTo(QString tag);
+    void navigateTo(QString tag);
 
-        void newRootScreen(QString tag);
-        void replace(QString tag);
+    void newRootScreen(QString tag);
+    void replace(QString tag);
 
     AbstractFragment* Front();
 
@@ -33,4 +28,4 @@ public:
     virtual void onResume();
 };
 
-#endif //NULL_ABSTRACTFRAGMENT_H
+#endif // ABSTRACTFRAGMENT_H

@@ -1,9 +1,5 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_OPTIONSFRAGMENT_H
-#define NULL_OPTIONSFRAGMENT_H
+#ifndef OPTIONSFRAGMENT_H
+#define OPTIONSFRAGMENT_H
 
 #include "abstractfragment.h"
 #include "screensfactory.h"
@@ -22,4 +18,4 @@ private:
     QPushButton *backButton;
 };
 
-#endif //NULL_OPTIONSFRAGMENT_H
+#endif // SETTINGSFRAGMENT_H

@@ -1,16 +1,11 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_MAINFRAGMENT_H
-#define NULL_MAINFRAGMENT_H
+#ifndef MAINFRAGMENT_H
+#define MAINFRAGMENT_H
 
 #include "abstractfragment.h"
 #include "screensfactory.h"
 
 #include <QPushButton>
 #include <QInputDialog>
-#include <QPixmap       >
 
 class MainFragment: public AbstractFragment {
     Q_OBJECT
@@ -27,8 +22,6 @@ private:
     QPushButton *createButton;
     QPushButton *playButton;
     QPushButton *optionsButton;
-    QButtonGroup *layout;
-    QPIxmap *logo;
 };
 
-#endif //NULL_MAINFRAGMENT_H
+#endif // MAINFRAGMENT_H

@@ -1,9 +1,5 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_FRAGMENTNAVIGATOR_H
-#define NULL_FRAGMENTNAVIGATOR_H
+   #ifndef FRAGMENTNAVIGATOR_H
+#define FRAGMENTNAVIGATOR_H
 
 #include "abstractfragment.h"
 #include "abstractscreensfactory.h"
@@ -22,7 +18,7 @@ public:
 
 
 public slots:
-            void navigateTo(QString tag);
+    void navigateTo(QString tag);
 
     void back();
 
@@ -42,4 +38,4 @@ private:
     void disconnectFragment(AbstractFragment *fragment);
 };
 
-#endif //NULL_FRAGMENTNAVIGATOR_H
+#endif // FRAGMENTNAVIGATOR_H

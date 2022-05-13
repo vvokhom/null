@@ -1,15 +1,10 @@
-//
-// Created by vladimir on 15.04.22.
-//
-
-#ifndef NULL_WAITINGFRAGMENT_H
-#define NULL_WAITINGFRAGMENT_H
+#ifndef WAITINGFRAGMENT_H
+#define WAITINGFRAGMENT_H
 
 #include "abstractfragment.h"
 
 
 #include <QPushButton>
-#include <QMovie>
 
 class WaitingFragment: public AbstractFragment {
     Q_OBJECT
@@ -17,23 +12,16 @@ public:
     WaitingFragment();
     ~WaitingFragment();
 
-    void disconnect();
-
-
-
 public slots:
     void onBackPressed();
-    void playerConnects();
-    void startGame();
+    //void onContinuePressed();
+    //void onDisconnectPressed();
 
 private:
-    QGroupBox *layout;
-    QLabel *roomName;
-    QLabel *players;
     QPushButton *backButton;
-    QMovie waitingMovie;
-
-
+    //QPushButton *continueButton;
+    //QLabel *Players;
+    //QPushButton *DisconnectButton;
 };
 
-#endif //NULL_WAITINGFRAGMENT_H
+#endif // WAITINGFRAGMENT_H
