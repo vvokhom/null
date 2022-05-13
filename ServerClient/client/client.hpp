@@ -33,7 +33,7 @@ private:
     void get_client_input();
     void do_write(boost_error &error, size_t bytes);
     void do_read(std::function<void(boost_error, size_t)> callback);
-    void on_login(boost_error &error, size_t bytes);
+    void on_login(boost_error &error, size_t bytes, std::string login);
     void got_response(boost_error &error, size_t bytes);
     void ready_to_play(boost_error &error, size_t bytes);
     void dummy(boost_error &error, size_t bytes);
