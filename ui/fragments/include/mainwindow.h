@@ -15,8 +15,9 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 private:
-    std::unique_ptr<std::thread>  client_thread;
-    std::unique_ptr<std::thread>  resolver_thread;
+
+    //std::unique_ptr<std::thread>  client_thread;
+    //std::unique_ptr<std::thread>  resolver_thread;
 
     QStackedWidget *container;
     FragmentNavigator *navigator;

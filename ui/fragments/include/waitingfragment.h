@@ -1,10 +1,14 @@
 #ifndef WAITINGFRAGMENT_H
 #define WAITINGFRAGMENT_H
 
+#include <client.hpp>
+
 #include "abstractfragment.h"
 
 
 #include <QPushButton>
+
+
 
 class WaitingFragment: public AbstractFragment {
     Q_OBJECT
@@ -14,12 +18,12 @@ public:
 
 public slots:
     void onBackPressed();
-    //void onContinuePressed();
+    void onReadyPressed();
     //void onDisconnectPressed();
 
 private:
     QPushButton *backButton;
-    //QPushButton *continueButton;
+    QPushButton *readyButton;
     //QLabel *Players;
     //QPushButton *DisconnectButton;
 };

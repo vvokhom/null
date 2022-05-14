@@ -20,6 +20,10 @@ WaitingFragment::WaitingFragment() {
     backButton->setStyleSheet("color:#242424;font-size:24px");
     connect(backButton, &QPushButton::clicked, this, &WaitingFragment::onBackPressed);
 
+    readyButton = new QPushButton("Ready");
+    readyButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(readyButton, &QPushButton::clicked, this, &WaitingFragment::onReadyPressed);
+
     /*
     continueButton = new QPushButton("Continue");
     continueButton->setStyleSheet("color:#242424;font-size:24px");
@@ -28,6 +32,9 @@ WaitingFragment::WaitingFragment() {
 
     buttonContainer->addWidget(backButton);
     loadingButtonContainer->addWidget(backButton);
+
+    buttonContainer->addWidget(readyButton);
+    loadingButtonContainer->addWidget(readyButton);
 
 //    buttonContainer->addWidget(continueButton);
 //    loadingButtonContainer->addWidget(continueButton);
@@ -50,17 +57,24 @@ WaitingFragment::WaitingFragment() {
     mainVLayout->addLayout(mainHLayout);
     mainVLayout->setAlignment(Qt::AlignCenter);
 
+
     this->setLayout(mainVLayout);
 }
 
 
 WaitingFragment::~WaitingFragment() {
     delete backButton;
+    delete readyButton;
 
 }
 
 void WaitingFragment::onBackPressed() {
     back();
+}
+
+void WaitingFragment::onReadyPressed() {
+  //client.ready_to_play(null, 0);
+  navigateTo(GAME_TAG);
 }
 
 //void WaitingFragment::onContinuePressed() {

@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     } catch (std::exception& e) {
         qDebug("%s", e.what());
     }
+
 }
 
 MainWindow::~MainWindow() {

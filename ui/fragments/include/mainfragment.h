@@ -4,6 +4,8 @@
 #include "abstractfragment.h"
 #include "screensfactory.h"
 
+//#include <client.hpp>
+
 #include <QPushButton>
 #include <QInputDialog>
 

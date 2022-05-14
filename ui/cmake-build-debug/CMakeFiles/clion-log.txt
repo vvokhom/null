@@ -1,4 +1,4 @@
-/snap/clion/190/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/190/bin/ninja/linux/ninja -G Ninja -S /home/vladimir/CLionProjects/HW/Mafia-TP-project/ui -B /home/vladimir/CLionProjects/HW/Mafia-TP-project/ui/cmake-build-debug
+/snap/clion/190/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/190/bin/ninja/linux/ninja -G Ninja -S /home/vladimir/CLionProjects/HW/Monopoly/null/ui -B /home/vladimir/CLionProjects/HW/Monopoly/null/ui/cmake-build-debug
 -- The CXX compiler identification is GNU 11.2.0
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
@@ -20,4 +20,4 @@ CMake Error at CMakeLists.txt:14 (find_package):
 
 
 -- Configuring incomplete, errors occurred!
-See also "/home/vladimir/CLionProjects/HW/Mafia-TP-project/ui/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+See also "/home/vladimir/CLionProjects/HW/Monopoly/null/ui/cmake-build-debug/CMakeFiles/CMakeOutput.log".

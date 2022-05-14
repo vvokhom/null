@@ -50,7 +50,9 @@ CreatingFragment::CreatingFragment() {
     mainVLayout->addLayout(mainHLayout);
     mainVLayout->setAlignment(Qt::AlignCenter);
 
-    this->setLayout(mainVLayout);
+
+
+  this->setLayout(mainVLayout);
 }
 
 

@@ -54,6 +54,8 @@ MainFragment::MainFragment() {
     mainVLayout->addLayout(mainHLayout);
     mainVLayout->setAlignment(Qt::AlignCenter);
 
+
+
     this->setLayout(mainVLayout);
 }
 
@@ -66,12 +68,26 @@ void MainFragment::onCreatePressed() {
 }
 void MainFragment::onPlayPressed() {
 
-    bool ok = false;
+
+
+    /*bool ok = false;
     int id = QInputDialog::getInt(this, "Подключение к игре", "Введите ID игры",0,0, 2147483647, 1, &ok);
-    if (ok/* && ...*/) {
+    if (ok/* && ...) {
         //connect
         navigateTo(WAITING_TAG);
-    }
+    }*/
+
+      bool ok = false;
+
+  QString myName =  QInputDialog::getText(this, tr("Fill in your name:"),
+                                          tr("User name:"), QLineEdit::Normal,
+                                          QString(), &ok);
+
+  if (ok) {
+    //client.on_login(boost_error, 0, myName);
+    navigateTo(WAITING_TAG);
+  }
+
 
 }
 

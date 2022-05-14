@@ -61,7 +61,8 @@ add_subdirectory(fragments)
 #qt5_use_modules(Widgets Charts)
 #qt5_wrap_cpp(gui_SRC gui.h gui.cpp)
 
+
 add_executable(ui main.cpp data.cpp)
-target_link_libraries(ui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets abstract fragments)
+target_link_libraries(ui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets abstract fragments client)
 
 

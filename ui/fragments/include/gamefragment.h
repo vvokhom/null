@@ -4,9 +4,13 @@
 #include "abstractfragment.h"
 #include "screensfactory.h"
 
+//#include <client.hpp>
+
 #include <QPushButton>
 #include <QLabel>
 #include <QPixmap>
+
+
 
 class GameFragment: public AbstractFragment {
     Q_OBJECT

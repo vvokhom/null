@@ -33,5 +33,5 @@ AbstractFragment* ScreensFactory::create(QString tag) {
 }
 
 QString ScreensFactory::createStart() {
-    return GAME_TAG;
+    return MAIN_TAG;
 }
