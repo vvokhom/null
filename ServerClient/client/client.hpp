@@ -21,27 +21,29 @@ enum class State {
 
 class Client {
 private:
-    posix::stream_descriptor input_stream;
     State state = State::Login;
+    io_context context;
     ip::tcp::socket socket_;
     char output[256];
-    streambuf read_buf;
     json GameInfo;
+    bool StartPlay = false;
 
     void connect(std::string &ip, unsigned int &port);
     void on_connect(boost_error &error);
-    void get_client_input();
-    void do_write(boost_error &error, size_t bytes);
     void do_read(std::function<void(boost_error, size_t)> callback);
     void on_login(boost_error &error, size_t bytes);
+    void on_move(boost_error &error, size_t bytes);
     void got_response(boost_error &error, size_t bytes);
     void ready_to_play(boost_error &error, size_t bytes);
-    void dummy(boost_error &error, size_t bytes);
-    void close_connect();
-    void send_game_info(boost_error &error, size_t bytes);
 
 public:
-    Client(io_context &context, std::string &ip, unsigned int &port) : input_stream(context, STDIN_FILENO), socket_(context) {
+    Client(std::string &ip, unsigned int &port) :  socket_(context) {
         connect(ip, port);
     }
+    json GetGameInfo();
+    void Login(std::string login);
+    void GetInLine();
+    bool i_play();
+    void MakeMove();
+    void CloseConnect();
 };

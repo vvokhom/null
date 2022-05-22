@@ -4,7 +4,7 @@
 #define SV_BIND(a)  boost::bind(&Server::a, this, new_client, placeholders::error)
 #define NOCL_BIND(a)  boost::bind(&Server::a, this, placeholders::error)
 #define IO_BIND(a)  boost::bind(&Client::a, shared_from_this(), placeholders::error, placeholders::bytes_transferred)
-#define GAME_LOBBY_SIZE 2
+#define GAME_LOBBY_SIZE 1
 #define MAPP_SIZE 39
 
 void clear(char* arr) {
@@ -97,15 +97,14 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
         connection_close();
         return;
     }
-
     switch (state) {
         case State::Login: {
-            login = std::string(read_buff, bytes - 1);
+            login = check;
             on_login();
             break;
         }
         case State::Menu: {
-            if(check == "play\n") {
+            if(check == "play") {
                 if ((*playroom).size() == GAME_LOBBY_SIZE) {
                     write_buff = "Sorry, the game has started";
                     do_write(socket_, IO_BIND(dummy));
@@ -134,6 +133,9 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
 }
 
 void Client::connection_close() {
+    if ((*map_).find(login) == (*map_).end()) {
+        return;
+    }
     std::cout << login << " - " << "CLIENT HAS EXITED\n";
     state = State::End;
     socket_.shutdown(ip::tcp::socket::shutdown_both);
