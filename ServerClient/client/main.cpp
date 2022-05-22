@@ -1,16 +1,31 @@
 #include <string>
+#include <thread>
+#include <iostream>
+#include <stdio.h>
+
+#include <sstream>
 
 #include "client.hpp"
 
 int main(int argc, char const *argv[]) {
-    io_context context;
     std::string ip = argc > 1 ? argv[1] : default_ip;
     unsigned int port = argc > 2 ? std::stol(argv[2]) : default_port;
-    Client client(context, ip, port);
-    context.run();
 
-    boost_error error;
-    size_t bytes;
-    client.on_login(error, bytes, "Leroy");
-    return 0;
+    Client client(ip, port);
+
+    // std::thread thread([&](){context.run();});
+    // thread.detach();
+
+    std::cout << "Login" << std::endl;
+    client.Login("Leroy");
+    sleep(5);
+    std::cout << "GetInLine" << std::endl;
+    client.GetInLine();
+
+    for(int i = 0; i < 10; ++i) {
+            sleep(5);
+            client.MakeMove();
+            std::cout << client.GetGameInfo() << std::endl;
+        }
+    client.CloseConnect();
 }

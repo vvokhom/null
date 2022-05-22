@@ -6,12 +6,6 @@ using json = nlohmann::json;
 #define CL_BIND(a)  boost::bind(&Client::a, this, placeholders::error)
 
 
-std::string to_string(streambuf &buf) {
-    std::ostringstream out;
-    out << &buf;
-    return out.str();
-}
-
 void clear(char* arr) {
     std::fill(arr, arr + sizeof(arr), 0);
 }
@@ -28,14 +22,12 @@ void Client::on_connect(boost_error &error) {
     }
 }
 
-void Client::on_login(boost_error &error, size_t bytes, std::string login) {
+void Client::on_login(boost_error &error, size_t bytes) {
     if (error || bytes == 0) {
         std::cerr << "WRITE ERROR: " << error.message() << "\n";
         return;
     }
     state = State::Menu;
-    std::string check = login;
-    async_write(socket_, buffer(check), IO_BIND(dummy));
 }
 
 void Client::ready_to_play(boost_error &error, size_t bytes) {
@@ -44,22 +36,17 @@ void Client::ready_to_play(boost_error &error, size_t bytes) {
         return;
     }
     state = State::Ready;
-    std::string check = "play";
-    async_write(socket_, buffer(check), IO_BIND(dummy));
-}
-
-void Client::send_game_info(boost_error &error, size_t bytes) {
-    if (error || bytes == 0) {
-        std::cerr << "WRITE ERROR: " << error.message() << "\n";
-        return;
-    }
-
-    std::string check = GameInfo.dump();
-    async_write(socket_, buffer(check), IO_BIND(dummy));
     do_read(IO_BIND(got_response));
 }
 
-void Client::dummy(boost_error &error, size_t bytes) {
+void Client::MakeMove() {
+    std::string check = GameInfo.dump();
+    async_write(socket_, buffer(check), IO_BIND(on_move));
+    context.reset();
+    context.poll();
+}
+
+void Client::on_move(boost_error &error, size_t bytes) {
     if (error || bytes == 0) {
         std::cerr << "WRITE ERROR: " << error.message() << "\n";
         return;
@@ -69,6 +56,8 @@ void Client::dummy(boost_error &error, size_t bytes) {
 
 void Client::do_read(std::function<void(boost_error, size_t)> callback) {
     clear(output);
+    context.reset();
+    context.run_one();
     socket_.async_read_some(buffer(output, sizeof(output)), callback);
 }
 
@@ -90,23 +79,19 @@ void Client::got_response(boost_error &error, size_t bytes) {
     }
 
     std::string response(output, bytes);
-    std::cout << response << '\n';
 
     if ( state == State::Play ) {
         GameInfo = json::parse(response);
-        std::cout << std::setw(4) << GameInfo << "\n\n";
     }
 
     if ( response != "Sorry, the game has started" && state == State::Ready ) {
         GameInfo = json::parse(response);
         state = State::Play;
+        StartPlay = true;
     }
-
-    do_read(IO_BIND(got_response));
 }
 
-void Client::close_connect() {
-    std::cout << "ENDING\n";
+void Client::CloseConnect() {
     std::string check = "end";
     write(socket_, buffer(check));
     socket_.shutdown(ip::tcp::socket::shutdown_both);
@@ -114,6 +99,23 @@ void Client::close_connect() {
     state = State::End;
 }
 
-json Client::get_game_info() {
+json Client::GetGameInfo() {
     return GameInfo;
+}
+
+void Client::Login(std::string login) {
+    async_write(socket_, buffer(login), IO_BIND(on_login));
+    context.reset();
+    context.poll();
+}
+
+void Client::GetInLine() {
+    std::string buff = "play";
+    async_write(socket_, buffer(buff), IO_BIND(ready_to_play));
+    context.reset();
+    context.poll();
+}
+
+bool Client::i_play() {
+    return StartPlay;
 }
