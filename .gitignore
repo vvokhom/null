@@ -1,34 +1,130 @@
-# Prerequisites
-*.d
 
-# Compiled Object files
-*.slo
-*.lo
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@vvokhom
+vvokhom /
+null
+Public
+
+Code
+Issues
+Pull requests 5
+Actions
+Projects
+Wiki
+Security
+Insights
+
+    Settings
+
+null/.gitignore
+@vvokhom
+vvokhom Merge branch 'dev' into gui
+Latest commit 1b0868e 14 days ago
+History
+2 contributors
+@vvokhom
+@Leroy6376
+83 lines (70 sloc) 839 Bytes
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+*~
+*.autosave
+*.a
+*.core
+*.moc
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
+*.orig
+*.rej
 *.so
-*.dylib
+*.so.*
+*_pch.h.cpp
+*_resource.rc
+*.qm
+.#*
+*.*#
+core
+!core/
+tags
+.DS_Store
+.directory
+*.debug
+Makefile*
+*.prl
+*.app
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+Thumbs.db
+*.res
+*.rc
+/.qmake.cache
+/.qmake.stash
+
+# qtcreator generated files
+*.pro.user*
+
+# xemacs temporary files
+*.flc
+
+# Vim temporary files
+.*.swp
+
+.idea
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.pdb
+*.sln
+*.suo
+*.vcproj
+*vcproj.*.*.user
+*.ncb
+*.sdf
+*.opensdf
+*.vcxproj
+*vcxproj.*
+
+build-ui-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/
+*/cmake-build-debug/
+
+
+# MinGW generated files
+*.Debug
+*.Release
+
+# Python byte code
+*.pyc
+
+# Binaries
+# --------
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
+
 *.out
 *.app
 
 .vscode/
+
+    © 2022 GitHub, Inc.
+
+    Terms
+    Privacy
+    Security
+    Status
+    Docs
+    Contact GitHub
+    Pricing
+    API
+    Training
+    Blog
+    About
+
+Loading complete
