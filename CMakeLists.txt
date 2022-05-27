@@ -17,3 +17,6 @@ target_link_libraries(client.out client)
 add_library(server STATIC ServerClient/server/server.cpp)
 add_executable(server.out ServerClient/server/main.cpp)
 target_link_libraries(server.out server)
+
+# ui
+add_subdirectory(ui)
