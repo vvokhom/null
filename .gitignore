@@ -1,3 +1,34 @@
+
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@vvokhom
+vvokhom /
+null
+Public
+
+Code
+Issues
+Pull requests 5
+Actions
+Projects
+Wiki
+Security
+Insights
+
+    Settings
+
+null/.gitignore
+@vvokhom
+vvokhom Merge branch 'dev' into gui
+Latest commit 1b0868e 14 days ago
+History
+2 contributors
+@vvokhom
+@Leroy6376
+83 lines (70 sloc) 839 Bytes
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 
@@ -81,3 +112,19 @@ build-ui-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/
 *.app
 
 .vscode/
+
+    © 2022 GitHub, Inc.
+
+    Terms
+    Privacy
+    Security
+    Status
+    Docs
+    Contact GitHub
+    Pricing
+    API
+    Training
+    Blog
+    About
+
+Loading complete
