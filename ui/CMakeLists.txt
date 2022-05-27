@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
-find_package(qt5widget)
+#find_package(qt5widget)
 
 #set(PROJECT_SOURCES
 #    main.cpp
@@ -58,11 +58,11 @@ add_subdirectory(abstract)
 add_subdirectory(fragments)
 #add_subdirectory(main)
 
-#qt5_use_modules(Widgets Charts)
+#qt5_use_modules(Widgets)
 #qt5_wrap_cpp(gui_SRC gui.h gui.cpp)
 
 
-add_executable(ui main.cpp data.cpp)
-target_link_libraries(ui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets abstract fragments client)
+add_executable(ui.out main.cpp data.cpp)
+target_link_libraries(ui.out PRIVATE Qt${QT_VERSION_MAJOR}::Widgets abstract fragments client)
 
 

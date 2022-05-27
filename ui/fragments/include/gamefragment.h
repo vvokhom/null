@@ -27,7 +27,7 @@ public slots:
 private:
 QLabel *mapContainer;
     QPixmap *map;
-    QVector<QImage*> players;
+    QVector<QLabel*> playerLabel;
     QLabel *funds; 
 };
 
