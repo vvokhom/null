@@ -116,6 +116,6 @@ void Client::GetInLine() {
     context.poll();
 }
 
-bool Client::i_play() {
+bool Client::IsPlay() {
     return StartPlay;
 }

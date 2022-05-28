@@ -18,7 +18,7 @@ enum TileType {
 
 class Tile {
  public:
-  Tile(TileType type, int price, int streetID);
+  Tile(TileType type, int price, int streetID, int ownerID);
   ~Tile();
   TileType getType();
   int getStreetID();
