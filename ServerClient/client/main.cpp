@@ -21,11 +21,14 @@ int main(int argc, char const *argv[]) {
     sleep(5);
     std::cout << "GetInLine" << std::endl;
     client.GetInLine();
+    sleep(5);
 
-    for(int i = 0; i < 10; ++i) {
+    if (client.IsPlay()) {
+        for(int i = 0; i < 10; ++i) {
             sleep(5);
-            client.MakeMove();
+            client.MakeMove(client.GetGameInfo());
             std::cout << client.GetGameInfo() << std::endl;
         }
+    }
     client.CloseConnect();
 }
