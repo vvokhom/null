@@ -6,6 +6,7 @@
 #define LOGIC__GAME_H_
 
 #include<vector>
+#include <string>
 #include"player.h"
 #include "tile.h"
 #include "street.h"
