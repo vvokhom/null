@@ -84,7 +84,8 @@ void MainFragment::onPlayPressed() {
                                           QString(), &ok);
 
   if (ok) {
-    //client.on_login(boost_error, 0, myName);
+    Client* client = getClient();
+    client->Login(myName.toStdString());
     navigateTo(WAITING_TAG);
   }
 

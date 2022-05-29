@@ -19,6 +19,11 @@ int Tile::getOwnerID() {
 
 }
 
+int Tile::setOwnerID(int id) {
+  ownerID = id;
+
+}
+
 int Tile::getPrice() {
   return price;
 

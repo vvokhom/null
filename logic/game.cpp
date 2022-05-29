@@ -96,10 +96,26 @@ void Game::endGame(){
 
 void Game::resolveTile(int activeID){
   Player* activePlayer = &(players[activeID]);
-  Tile* tile = &(map[activePlayer->getPosition()]);
-  switch (tile->getType()) {
+  Tile* activeTile = &(map[activePlayer->getPosition()]);
+  switch (activeTile->getType()) {
     case TileType::tax:
       activePlayer->pay(100);
+      break;
+      case TileType::rail:
+      if (activeTile->getOwnerID() < 0 && response(activeID) && activePlayer->pay(activeTile->getPrice())) {
+        activeTile->setOwnerID(activeID);
+      } else if(activeTile->getOwnerID() != activeID) {
+        int railsInPossession = 0;
+        int recieverID = activeTile->getOwnerID();
+        for (int i = 0; i < mapSize; i++) {
+          Tile* tile  = map[i];
+
+          if (tile->getType() = TileType::rail && tile->getOwnerID( = recieverID)) {
+            railsInPossession++;
+          }
+          activePlayer->pay(50*railsInPossession);
+        }
+      }
       break;
   }
 

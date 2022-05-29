@@ -5,6 +5,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <client.hpp>
+
 class AbstractFragment: public QFrame {
     Q_OBJECT
 
@@ -17,9 +19,13 @@ signals:
     void replace(QString tag);
 
     AbstractFragment* Front();
+    Client* getClient();
 
 protected:
     void clearList(QLayout *list);
+
+
+
 
 public:
     AbstractFragment();

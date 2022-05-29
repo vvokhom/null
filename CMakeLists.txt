@@ -22,3 +22,5 @@ target_link_libraries(server.out server)
 add_subdirectory(logic)
 # ui
 add_subdirectory(ui)
+target_include_directories(fragments PUBLIC logic)
+target_include_directories(fragments PUBLIC ServerClient/client)

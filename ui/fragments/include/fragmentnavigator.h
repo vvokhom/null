@@ -12,7 +12,7 @@ class FragmentNavigator: public QObject {
 
 public:
     FragmentNavigator() = delete;
-    FragmentNavigator(QStackedWidget *container, AbstractScreensFactory *screensFactory);
+    FragmentNavigator(QStackedWidget *container, AbstractScreensFactory *screensFactory, Client* client);
     ~FragmentNavigator();
     AbstractFragment* getStartScreen();
 
@@ -26,6 +26,8 @@ public slots:
 
     AbstractFragment* Front();
 
+  Client* getClient();
+
 private:
     QStackedWidget *currentContainer;
 
@@ -33,6 +35,8 @@ private:
     std::list<AbstractFragment*> stack;
 
     AbstractFragment* createAndConnect(QString tag);
+
+    Client* client;
 
     void connectFragment(AbstractFragment *fragment);
     void disconnectFragment(AbstractFragment *fragment);

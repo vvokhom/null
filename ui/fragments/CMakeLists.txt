@@ -14,5 +14,5 @@ add_library(fragments STATIC
         )
 #add_subdirectory(logic)
 target_include_directories(fragments PUBLIC include)
-target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract logic)
-target_include_directories(fragments PUBLIC ../../logic)
+target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract logic client)
+

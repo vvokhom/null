@@ -29,6 +29,7 @@ class Game {
   int playersNum;
   std::vector<Player> players;
   Tile* map;
+  int mapSize;
   Street* streets;
   int turnCount;
   bool response(int playerID);
