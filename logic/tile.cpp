@@ -19,7 +19,7 @@ int Tile::getOwnerID() {
 
 }
 
-int Tile::setOwnerID(int id) {
+void Tile::setOwnerID(int id) {
   ownerID = id;
 
 }

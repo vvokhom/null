@@ -72,7 +72,7 @@ GameFragment::~GameFragment() {
 
 
 void GameFragment::update(const QString state) {
-  Game* game = new Game();
+  //Game* game = new Game();
 }
 
 #include "moc_gamefragment.cpp"

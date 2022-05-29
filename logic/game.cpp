@@ -107,9 +107,9 @@ void Game::resolveTile(int activeID){
         int railsInPossession = 0;
         int recieverID = activeTile->getOwnerID();
         for (int i = 0; i < mapSize; i++) {
-          Tile* tile  = map[i];
+          Tile tile  = map[i];
 
-          if (tile->getType() = TileType::rail && tile->getOwnerID( = recieverID)) {
+          if (tile.getType() == TileType::rail && tile.getOwnerID() == recieverID) {
             railsInPossession++;
           }
           activePlayer->pay(50*railsInPossession);
