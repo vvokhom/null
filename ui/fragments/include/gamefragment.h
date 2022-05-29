@@ -4,11 +4,13 @@
 #include "abstractfragment.h"
 #include "screensfactory.h"
 
-//#include <client.hpp>
+#include "game.h"
 
 #include <QPushButton>
 #include <QLabel>
-#include <QPixmap>
+
+#include  <QTimer>
+#include <QPainter>
 
 
 
@@ -21,14 +23,21 @@ public:
 
 public slots:
 
-    void update(const QString state);
-
+  void onTick();
 
 private:
 QLabel *mapContainer;
     QPixmap *map;
     QVector<QLabel*> playerLabels;
-    QLabel *funds; 
+    QLabel *funds;
+    QTimer* tickTimer;
+    int myID;
+    int tickCounter;
+    QPainter* painter;
+  void update(json state);
+  void takeTurn(Game game);
+  void redraw(Game game);
+
 };
 
 #endif // GAMEFRAGMENT_H

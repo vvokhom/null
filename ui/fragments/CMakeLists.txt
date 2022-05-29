@@ -11,7 +11,7 @@ add_library(fragments STATIC
         src/screensfactory.cpp
         src/mainwindow.cpp
         src/fragmentnavigator.cpp
-        )
+        include/gamemap.h src/gamemap.cpp)
 #add_subdirectory(logic)
 target_include_directories(fragments PUBLIC include)
 target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract logic client)
