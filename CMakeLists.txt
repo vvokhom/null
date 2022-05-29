@@ -19,7 +19,9 @@ add_executable(server.out ServerClient/server/main.cpp)
 target_link_libraries(server.out server)
 
 # ui
-#add_subdirectory(ui)
+add_subdirectory(ui)
+target_include_directories(fragments PUBLIC logic)
+target_include_directories(fragments PUBLIC ServerClient/client)
 
 # logic
 add_subdirectory(logic)
