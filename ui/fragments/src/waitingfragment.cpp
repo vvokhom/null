@@ -73,8 +73,12 @@ void WaitingFragment::onBackPressed() {
 }
 
 void WaitingFragment::onReadyPressed() {
-  //client.ready_to_play(null, 0);
+  Client* client = getClient();
+  client->GetInLine();
+
+  //while (client->IsPlay)
   navigateTo(GAME_TAG);
+
 }
 
 //void WaitingFragment::onContinuePressed() {

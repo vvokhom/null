@@ -24,7 +24,7 @@ class Tile {
   int getStreetID();
   int getOwnerID();
   int getPrice();
-  void setOwnerID();
+  void setOwnerID(int id);
  private:
   TileType type;
   int streetID;

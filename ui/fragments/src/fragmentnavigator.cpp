@@ -1,11 +1,15 @@
 #include "fragmentnavigator.h"
 #include "screensfactory.h"
 
+#include <client.hpp>
+
 using namespace screens;
 
 FragmentNavigator::FragmentNavigator(
         QStackedWidget *container,
-        AbstractScreensFactory *screensFactory) {
+
+        AbstractScreensFactory *screensFactory,
+        Client* client): client(client) {
 
     this->screensFactory = screensFactory;
     this->currentContainer = container;
@@ -78,6 +82,7 @@ void FragmentNavigator::connectFragment(AbstractFragment *fragment) {
     connect(fragment, &AbstractFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     connect(fragment, &AbstractFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
     connect(fragment, &AbstractFragment::Front, this, &FragmentNavigator::Front);
+    connect(fragment, &AbstractFragment::getClient, this, &FragmentNavigator::getClient);
 }
 
 void FragmentNavigator::disconnectFragment(AbstractFragment *fragment) {
@@ -86,6 +91,7 @@ void FragmentNavigator::disconnectFragment(AbstractFragment *fragment) {
     disconnect(fragment, &AbstractFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     disconnect(fragment, &AbstractFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
     disconnect(fragment, &AbstractFragment::Front, this, &FragmentNavigator::Front);
+  disconnect(fragment, &AbstractFragment::getClient, this, &FragmentNavigator::getClient);
 }
 
 AbstractFragment* FragmentNavigator::createAndConnect(QString tag) {
@@ -93,6 +99,13 @@ AbstractFragment* FragmentNavigator::createAndConnect(QString tag) {
     AbstractFragment *fragment = this->screensFactory->create(tag);
     connectFragment(fragment);
     return fragment;
+}
+
+Client* FragmentNavigator::getClient(){
+  if (client == nullptr) {
+
+  }
+  return client;
 }
 
 #include "moc_fragmentnavigator.cpp"

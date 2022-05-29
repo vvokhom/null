@@ -1,11 +1,16 @@
 #include "gamefragment.h"
 #include "screensfactory.h"
 
+//#include "../../logic/game.h"
 
+#include "game.h"
+#include "QDebug"
 
 using namespace screens;
 
 GameFragment::GameFragment() {
+  Client* client = getClient();
+
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerContainer = new QFrame;
@@ -67,6 +72,7 @@ GameFragment::~GameFragment() {
 
 
 void GameFragment::update(const QString state) {
+  Game* game = new Game();
 }
 
 #include "moc_gamefragment.cpp"

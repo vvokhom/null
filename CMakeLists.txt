@@ -25,3 +25,4 @@ add_subdirectory(logic)
 add_subdirectory(ui)
 target_include_directories(fragments PUBLIC logic)
 target_include_directories(fragments PUBLIC ServerClient/client)
+

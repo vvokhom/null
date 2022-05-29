@@ -7,6 +7,8 @@ Tile::Tile(TileType type, int price, int streetID, int ownerID): ownerID(ownerID
 
 }
 
+Tile::~Tile()=default;
+
 TileType Tile::getType() {
   return  type;
 
@@ -14,6 +16,11 @@ TileType Tile::getType() {
 
 int Tile::getOwnerID() {
   return ownerID;
+
+}
+
+int Tile::setOwnerID(int id) {
+  ownerID = id;
 
 }
 

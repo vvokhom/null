@@ -10,6 +10,7 @@
 #include "creatingfragment.h"
 
 
+
 namespace screens {
    /*enum Tag{
         kOptions,
@@ -33,6 +34,8 @@ class ScreensFactory : public AbstractScreensFactory {
 public:
     ScreensFactory();
     ~ScreensFactory();
+
+    Client* client;
 
     AbstractFragment* create(QString tag) override;
     QString createStart() override;
