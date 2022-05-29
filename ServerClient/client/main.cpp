@@ -22,11 +22,12 @@ int main(int argc, char const *argv[]) {
     std::cout << "GetInLine" << std::endl;
     client.GetInLine();
     sleep(5);
+
     if (client.IsPlay()) {
         for(int i = 0; i < 10; ++i) {
-        sleep(5);
-        client.MakeMove();
-        std::cout << client.GetGameInfo() << std::endl;
+            sleep(5);
+            client.MakeMove(client.GetGameInfo());
+            std::cout << client.GetGameInfo() << std::endl;
         }
     }
     client.CloseConnect();

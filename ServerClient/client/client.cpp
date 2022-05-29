@@ -39,8 +39,8 @@ void Client::ready_to_play(boost_error &error, size_t bytes) {
     do_read(IO_BIND(got_response));
 }
 
-void Client::MakeMove() {
-    std::string check = GameInfo.dump();
+void Client::MakeMove(json GameState) {
+    std::string check = GameState.dump();
     async_write(socket_, buffer(check), IO_BIND(on_move));
     context.reset();
     context.poll();

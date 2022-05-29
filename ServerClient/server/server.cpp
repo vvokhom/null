@@ -119,6 +119,28 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
 
             int ActivePlayer = GameInfo["Active"];
             if( login == GameInfo["Players"][ActivePlayer]) {
+                int Players = GameInfo["PlayersNumber"];
+                for(int i = 0; i < Players; ++i) {
+                    if((*playroom).find(GameInfo["Players"][i]) == (*playroom).end()) {
+                        std::string login = GameInfo["Players"][i];
+                        GameInfo[login]["Alive"] = false;
+                    }
+                }
+
+                int count = 0;
+                while(true) {
+                    ActivePlayer = (++ActivePlayer) % Players;
+                    ++count;
+                    std::string login = GameInfo["Players"][ActivePlayer];
+                    if(GameInfo[login]["Alive"] == true) {
+                        break;
+                    }
+                    if ( count == Players) {
+                        break;
+                    }
+                }
+                GameInfo["Active"] = ActivePlayer;
+
                 for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
                     if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Ready) {
                         write_buff = GameInfo.dump();
@@ -267,31 +289,3 @@ json Client::create_game_info() {
     return GameInfo;
 }
 
-json Client::update_game_info(json info) {
-    // Меняем позицию игрока
-    int shift = 2 + rand() % (12);
-    int pos = info[login]["Position"];
-    if (pos + shift >= MAPP_SIZE) {
-        int money = info[login]["Money"];
-        info[login]["Money"] = money + 200;
-    }
-    info[login]["Position"] = (pos + shift) % MAPP_SIZE;
-
-    // Анализ позиции куда наступил игрок:
-    // 1) Если пустая клетка, послать сообщение с предложение покупки. Если купил изменить состояние ячейки
-    // 2) Если ячейка занята, вычесть ренту из денег
-    // 3) Если ячейка игрока и собрано все семейство, послать сообщение с предложение постройки дома. Если построил изменить состояние ячейки
-    // 4) Если особая ячейка (шанс, общественная казна, тюрьма) - вызвать соотвествеющую функцию
-
-    // Анализ состояния денег игрока
-    // 1) Если денег больше нуля, продолжаем
-    // 2) Если денег 0 или меньше, удаляем игрока из списка, уменьшаем колличество игроков.
-    // Если отстался один игрок возвращяем логин победителя
-
-    // Меняем активного игрока
-    int num = info["PlayersNumber"];
-    int ActivePlayer = info["Active"];
-    info["Active"] = (ActivePlayer + 1) % num;
-
-    return info;
-}

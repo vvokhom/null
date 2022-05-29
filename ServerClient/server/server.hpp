@@ -43,7 +43,6 @@ private:
     void connection_close();
     void ready_to_play();
     json create_game_info();
-    json update_game_info(json info);
 
     void dummy(boost_error &error, size_t bytes) {}
 

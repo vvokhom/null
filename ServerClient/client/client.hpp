@@ -44,6 +44,6 @@ public:
     void Login(std::string login);
     void GetInLine();
     bool IsPlay();
-    void MakeMove();
+    void MakeMove(json GameState);
     void CloseConnect();
 };
