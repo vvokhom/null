@@ -1,5 +1,7 @@
 #include "waitingfragment.h"
 #include "screensfactory.h"
+
+
 using namespace screens;
 
 WaitingFragment::WaitingFragment() {
@@ -16,6 +18,9 @@ WaitingFragment::WaitingFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
+retryTimer = new QTimer;
+retryTimer->setInterval(100);
+  connect(retryTimer, &QTimer::timeout, this, &WaitingFragment::onGameStartCheck);
     backButton = new QPushButton("Back");
     backButton->setStyleSheet("color:#242424;font-size:24px");
     connect(backButton, &QPushButton::clicked, this, &WaitingFragment::onBackPressed);
@@ -24,17 +29,18 @@ WaitingFragment::WaitingFragment() {
     readyButton->setStyleSheet("color:#242424;font-size:24px");
     connect(readyButton, &QPushButton::clicked, this, &WaitingFragment::onReadyPressed);
 
-    /*
-    continueButton = new QPushButton("Continue");
-    continueButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(continueButton, &QPushButton::clicked, this, &WaitingFragment::onContinuePressed);
-    */
+  forceStartButton = new QPushButton("Force start");
+  forceStartButton->setStyleSheet("color:#242424;font-size:24px");
+  connect(forceStartButton, &QPushButton::clicked, this, &WaitingFragment::onForceStartPressed);
 
     buttonContainer->addWidget(backButton);
     loadingButtonContainer->addWidget(backButton);
 
     buttonContainer->addWidget(readyButton);
     loadingButtonContainer->addWidget(readyButton);
+
+  buttonContainer->addWidget(forceStartButton);
+  loadingButtonContainer->addWidget(forceStartButton);
 
 //    buttonContainer->addWidget(continueButton);
 //    loadingButtonContainer->addWidget(continueButton);
@@ -72,13 +78,35 @@ void WaitingFragment::onBackPressed() {
     back();
 }
 
+void WaitingFragment::onForceStartPressed() {
+  retryTimer->stop();
+  navigateTo(GAME_TAG);
+}
+
+
 void WaitingFragment::onReadyPressed() {
   Client* client = getClient();
   client->GetInLine();
 
-  //while (client->IsPlay)
-  navigateTo(GAME_TAG);
+  readyButton->setText("Wait");
+  readyButton->setEnabled(false);
 
+
+
+  retryTimer->start();
+
+
+
+
+}
+
+void WaitingFragment::onGameStartCheck() {
+  Client* client = getClient();
+
+  if (client->IsPlay()) {
+    retryTimer->stop();
+    navigateTo(GAME_TAG);
+  }
 }
 
 //void WaitingFragment::onContinuePressed() {

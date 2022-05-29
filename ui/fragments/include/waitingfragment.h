@@ -7,6 +7,7 @@
 
 
 #include <QPushButton>
+#include <QTimer>
 
 
 
@@ -20,12 +21,19 @@ public slots:
     void onBackPressed();
     void onReadyPressed();
     //void onDisconnectPressed();
+    void onGameStartCheck();
+    void onForceStartPressed();
 
-private:
+ private:
     QPushButton *backButton;
     QPushButton *readyButton;
+  QPushButton *forceStartButton;
     //QLabel *Players;
     //QPushButton *DisconnectButton;
+    QTimer* retryTimer;
+
+
+
 };
 
 #endif // WAITINGFRAGMENT_H

@@ -3,14 +3,25 @@
 
 //#include "../../logic/game.h"
 
-#include "game.h"
-#include "QDebug"
+
+#include <QDebug>
+#include <QMessageBox>
+#include <string>
 
 using namespace screens;
 
-GameFragment::GameFragment() {
-  Client* client = getClient();
+bool Game::response(int playerID/* std::string*/) {
+  QMessageBox message;
+  message.setText("Yes?");
+  message.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  message.setDefaultButton(QMessageBox::Yes);
+  if(message.exec() == QMessageBox::Yes) return true;
+  return false;
+}
 
+
+
+GameFragment::GameFragment():tickCounter(0) {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerContainer = new QFrame;
@@ -26,11 +37,25 @@ GameFragment::GameFragment() {
     QVBoxLayout *buttonContainer = new QVBoxLayout;
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
-    mapContainer = new QLabel("map");
+
+    tickTimer = new QTimer;
+    tickTimer->setInterval(100);
+  connect(tickTimer, &QTimer::timeout, this, &GameFragment::onTick);
+  tickTimer->start();
+
+
+  mapContainer = new QLabel("map");
     map = new QPixmap(":/map.jpg");
     mapContainer->setPixmap(map->scaled(700, 700));//centerContainer->size()));
 
-    funds = new QLabel("Your funds: 1500 M");
+    painter = new QPainter(map);
+
+  painter->setBrush(QBrush(Qt::green));
+  painter->setPen(QPen(Qt::blue));
+  painter->drawRect(tickCounter, tickCounter, 500, 500);
+
+
+    funds = new QLabel(QString("Your funds: 0" ));
     gameInfo->addWidget(funds);
 
     playerLabels.push_back(new QLabel("<font color=\"green\">Player 1</font>: 1500 M"));
@@ -71,8 +96,21 @@ GameFragment::~GameFragment() {
 }*/
 
 
-void GameFragment::update(const QString state) {
-  //Game* game = new Game();
+void GameFragment::onTick() {
+  Client* client = getClient();
+  //todo:
+  std::string msg = "Ticks: " + std::to_string(tickCounter);
+  funds->setText(QString::fromStdString(msg));
+  painter->setBrush(QBrush(Qt::green));
+  painter->setPen(QPen(Qt::blue));
+  painter->drawRect(tickCounter, tickCounter, 50, 50);
+
+  tickCounter++;
+
+}
+
+void GameFragment::redraw(Game game) {
+
 }
 
 #include "moc_gamefragment.cpp"
