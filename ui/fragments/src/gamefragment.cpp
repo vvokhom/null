@@ -1,7 +1,9 @@
 #include "gamefragment.h"
 #include "screensfactory.h"
 
+//#include "../../logic/game.h"
 
+#include "game.h"
 
 using namespace screens;
 
@@ -67,6 +69,8 @@ GameFragment::~GameFragment() {
 
 
 void GameFragment::update(const QString state) {
+  Game* game = new Game();
+
 }
 
 #include "moc_gamefragment.cpp"

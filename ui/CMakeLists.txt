@@ -63,6 +63,6 @@ add_subdirectory(fragments)
 
 
 add_executable(ui.out main.cpp data.cpp)
-target_link_libraries(ui.out PRIVATE Qt${QT_VERSION_MAJOR}::Widgets abstract fragments client)
+target_link_libraries(ui.out PRIVATE Qt${QT_VERSION_MAJOR}::Widgets abstract fragments client logic)
 
 

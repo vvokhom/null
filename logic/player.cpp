@@ -8,6 +8,9 @@ Player::Player(std::string name, int id):name(name), id(id), position(0), funds(
 
 }
 
+Player::~Player()=default;
+
+
 int Player::getId() {
   return id;
 

@@ -12,6 +12,7 @@ add_library(fragments STATIC
         src/mainwindow.cpp
         src/fragmentnavigator.cpp
         )
-add_subdirectory(logic)
+#add_subdirectory(logic)
 target_include_directories(fragments PUBLIC include)
 target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract logic)
+target_include_directories(fragments PUBLIC ../../logic)
