@@ -38,7 +38,7 @@ class Game {
   int mapSize;
   Street* streets;
   int turnCount;
-  bool response(int playerID);
+  virtual bool response(int playerID, std::string message);
   void initialiseMap(json GameState);
 
 

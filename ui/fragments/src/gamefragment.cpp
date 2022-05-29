@@ -10,9 +10,9 @@
 
 using namespace screens;
 
-bool Game::response(int playerID/* std::string*/) {
+bool Game::response(int playerID, std::string text) {
   QMessageBox message;
-  message.setText("Yes?");
+  message.setText(QString::fromStdString(text));
   message.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
   message.setDefaultButton(QMessageBox::Yes);
   if(message.exec() == QMessageBox::Yes) return true;
@@ -36,6 +36,8 @@ GameFragment::GameFragment():tickCounter(0) {
 
     QVBoxLayout *buttonContainer = new QVBoxLayout;
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
+
+//makeTurn = new QPushButton("make turn");
 
 
     tickTimer = new QTimer;
@@ -83,6 +85,8 @@ GameFragment::GameFragment():tickCounter(0) {
     mainVLayout->addLayout(mainHLayout);
     mainVLayout->setAlignment(Qt::AlignCenter);
 
+
+
     this->setLayout(mainVLayout);
 }
 
@@ -101,16 +105,32 @@ void GameFragment::onTick() {
   //todo:
   std::string msg = "Ticks: " + std::to_string(tickCounter);
   funds->setText(QString::fromStdString(msg));
-  painter->setBrush(QBrush(Qt::green));
+  /*painter->setBrush(QBrush(Qt::green));
   painter->setPen(QPen(Qt::blue));
-  painter->drawRect(tickCounter, tickCounter, 50, 50);
-
+  painter->drawRect(tickCounter, tickCounter, 50, 50);*/
+  json state = client->GetGameInfo();
+  Game game(state);
+  takeTurn(state);
   tickCounter++;
 
 }
 
 void GameFragment::redraw(Game game) {
 
+}
+void GameFragment::takeTurn(json state) {
+  Client* client = getClient();
+
+  tickTimer->stop();
+  //disconnect(tickTimer, &QTimer::timeout, this, &GameFragment::onTick);
+  QMessageBox message;
+  message.setText(QString::fromStdString("text"));
+  message.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  message.setDefaultButton(QMessageBox::Yes);
+  if(message.exec() == QMessageBox::Yes)  client->MakeMove(state);
+
+  tickTimer->start();
+  //connect(tickTimer, &QTimer::timeout, this, &GameFragment::onTick);
 }
 
 #include "moc_gamefragment.cpp"

@@ -26,6 +26,7 @@ public slots:
   void onTick();
 
 private:
+  QPushButton* makeTurn;
 QLabel *mapContainer;
     QPixmap *map;
     QVector<QLabel*> playerLabels;
@@ -35,7 +36,7 @@ QLabel *mapContainer;
     int tickCounter;
     QPainter* painter;
   void update(json state);
-  void takeTurn(Game game);
+  void takeTurn(json state);
   void redraw(Game game);
 
 };
