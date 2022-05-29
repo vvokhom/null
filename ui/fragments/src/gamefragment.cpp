@@ -2,6 +2,7 @@
 #include "screensfactory.h"
 
 
+
 using namespace screens;
 
 GameFragment::GameFragment() {
@@ -11,6 +12,8 @@ GameFragment::GameFragment() {
 
     QVBoxLayout *gameMainLayout = new QVBoxLayout;
     QHBoxLayout *gameContent = new QHBoxLayout;
+    QVBoxLayout *gameInfo = new QVBoxLayout;
+  QVBoxLayout *playersStats = new QVBoxLayout;
 
 
     //QVBoxLayout *backContainer = new QVBoxLayout;
@@ -20,18 +23,19 @@ GameFragment::GameFragment() {
 
     mapContainer = new QLabel("map");
     map = new QPixmap(":/map.jpg");
-    mapContainer->setPixmap(*map);
+    mapContainer->setPixmap(map->scaled(700, 700));//centerContainer->size()));
 
-    funds = new QLabel("100 M");
+    funds = new QLabel("Your funds: 1500 M");
+    gameInfo->addWidget(funds);
 
+    playerLabels.push_back(new QLabel("<font color=\"green\">Player 1</font>: 1500 M"));
+  playerLabels.push_back(new QLabel("<font color=\"blue\">Player 2</font>: 1500 M"));
+    for (QLabel* label : playerLabels) {
+      playersStats->addWidget(label);
+    }
     gameContent->addWidget(mapContainer);
-    //backButton = new QPushButton("Back");
-    //backButton->setStyleSheet("color:#242424;font-size:24px");
-    //connect(backButton, &QPushButton::clicked, this, &GameFragment::onBackPressed);
-
-    //buttonContainer->addWidget(backButton);
-    //loadingButtonContainer->addWidget(backButton);
-
+  gameInfo->addLayout(playersStats);
+  gameContent->addLayout(gameInfo);
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -41,8 +45,6 @@ GameFragment::GameFragment() {
     centerContainer->setStyleSheet("color:#242424;font-size:24px");
     centerContainer->setLayout(gameContent);
 
-    //backContainer->setAlignment(Qt::AlignTop);
-    //startContent->addLayout(backContainer);
 
     gameContent->addLayout(gameMainLayout);
 
