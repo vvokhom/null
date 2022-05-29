@@ -9,7 +9,7 @@
 
 class Player {
  public:
-  Player(std::string name, int id);
+  Player(std::string name, int id_, int position_, int funds_, bool inPrison_, bool alive_);
   ~Player();
   int getId();
   std::string getName();

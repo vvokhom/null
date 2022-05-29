@@ -26,7 +26,7 @@ public:
     typedef std::unordered_map<std::string, Client::ptr> clients_map;
 
 private:
-    char read_buff[256];
+    char read_buff[5 * 1024];
     std::string login;
     std::string write_buff;
     size_t id = 0;

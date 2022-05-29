@@ -7,24 +7,23 @@
 #include <cstdlib>
 #include <ctime>
 
-void Game::initialiseMap() { //todo: парсить карту в отдельном классе
-
-
+void Game::initialiseMap(json GameState) { //todo: парсить карту в отдельном классе
   map = (Tile*)malloc(sizeof(Tile) * 40);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(street, 0, 0);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(start, 0, 0);
-  map[0] = Tile(start, 0, 0);
+  for(int i = 0; i < 40; ++i) {
+    map[i] = Tile(GameState["Map"][i]["Type"], GameState["Map"][i]["Price"], GameState["Map"][i]["StreetId"], GameState["Map"][i]["OwnerId"]);
+  }
 }
-Game::Game() {
+Game::Game(json GameState) {
   // устанвить сид игры:
   srand(time(nullptr));
-  initialiseMap();
+
+  playersNum = GameState["PlayersNumber"];
+  for(int i = 0; i < playersNum; ++i) {
+    std::string login = GameState["Players"][i];
+    players[i] = Player(login, i, GameState[login]["Position"], GameState[login]["Funds"], GameState[login]["InPrison"], GameState[login]["Alive"]);
+  }
+
+  initialiseMap(GameState);
 }
 int Game::startGame() {
   return turn(0);
@@ -103,4 +102,23 @@ void Game::resolveTile(int activeID){
       break;
   }
 
+}
+
+json Game::ToJson() {
+  json GameState;
+
+  GameState["PlayersNumber"] = playersNum;
+  GameState["Active"] = 0; // Нужно Id активного игрока
+
+  GameState["Players"] = {};
+  for(int i = 0; i < playersNum; ++i) {
+    GameState["Players"][i] = players[i].getName();
+    GameState[players[i].getName()] = {{"Funds", players[i].getFunds()}, {"Position", players[i].getPosition()}, {"InPrison", players[i].isInPrison()}, {"Alive", players[i].isAlive()}};
+  }
+
+  for(int i = 0; i < 40; ++i) {
+    GameState["Map"][i] = {{"Type", map[i].getType()}, {"Price", map[i].getPrice()}, {"StreetId", map[i].getStreetID()}, {"OwnerId", map[i].getOwnerID()}};
+  }
+
+  return GameState;
 }
