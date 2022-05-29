@@ -9,12 +9,17 @@
 #include"player.h"
 #include "tile.h"
 #include "street.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class Game {
  public:
-  Game();
+  Game(json GameState);
   ~Game();
   int startGame(); //  Возвращает код исполнения
+
+  json ToJson();
 
  private:
   int turn(int activeID);
@@ -33,7 +38,7 @@ class Game {
   Street* streets;
   int turnCount;
   bool response(int playerID);
-  void initialiseMap();
+  void initialiseMap(json GameState);
 
 
 

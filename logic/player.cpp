@@ -4,7 +4,7 @@
 
 #include "player.h"
 
-Player::Player(std::string name, int id):name(name), id(id), position(0), funds(1500), inPrison(false), alive(true) {
+Player::Player(std::string name, int id_, int position_, int funds_, bool inPrison_, bool alive_):name(name), id(id_), position(position_), funds(funds_), inPrison(inPrison_), alive(alive_) {
 
 }
 

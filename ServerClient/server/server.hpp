@@ -26,7 +26,7 @@ public:
     typedef std::unordered_map<std::string, Client::ptr> clients_map;
 
 private:
-    char read_buff[256];
+    char read_buff[5 * 1024];
     std::string login;
     std::string write_buff;
     size_t id = 0;
@@ -43,7 +43,6 @@ private:
     void connection_close();
     void ready_to_play();
     json create_game_info();
-    json update_game_info(json info);
 
     void dummy(boost_error &error, size_t bytes) {}
 

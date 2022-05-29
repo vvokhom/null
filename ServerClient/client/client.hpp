@@ -26,7 +26,7 @@ private:
     State state = State::Login;
     io_context context;
     ip::tcp::socket socket_;
-    char output[256];
+    char output[1024 * 5];
     json GameInfo;
     bool StartPlay = false;
 
@@ -45,7 +45,7 @@ public:
     json GetGameInfo();
     void Login(std::string login);
     void GetInLine();
-    bool i_play();
-    void MakeMove();
+    bool IsPlay();
+    void MakeMove(json GameState);
     void CloseConnect();
 };
