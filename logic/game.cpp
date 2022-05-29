@@ -26,7 +26,7 @@ void Game::initialiseMap(json GameState) { //todo: парсить карту в 
     map[i] = Tile(GameState["Map"][i]["Type"], GameState["Map"][i]["Price"], GameState["Map"][i]["StreetId"], GameState["Map"][i]["OwnerId"]);
   }
   
-  int* rent = {};
+  int* rent = (int*)malloc(sizeof(int)*6);
   rent = ArrayFilling(rent, 2, 10, 30, 90, 160, 250);
   streets[0] = Street(0, GameState["Map"][1]["Price"], 50, GameState["Map"][1]["HouseCount"], rent);
 
@@ -86,10 +86,12 @@ Game::Game(json GameState) {
   // устанвить сид игры:
   srand(time(nullptr));
 
+
   playersNum = GameState["PlayersNumber"];
+
   for(int i = 0; i < playersNum; ++i) {
     std::string login = GameState["Players"][i];
-    players[i] = Player(login, i, GameState[login]["Position"], GameState[login]["Funds"], GameState[login]["InPrison"], GameState[login]["Alive"]);
+    players.push_back(Player(login, i, GameState[login]["Position"], GameState[login]["Funds"], GameState[login]["InPrison"], GameState[login]["Alive"]));
   }
 
   initialiseMap(GameState);
@@ -276,6 +278,6 @@ json Game::ToJson() {
 }
 
 Game::~Game() {
-  delete[] map;
-  delete[] streets;
+  delete map;
+  delete streets;
 }
