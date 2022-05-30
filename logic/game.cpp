@@ -103,6 +103,11 @@ Game::Game(json GameState) {
 int Game::startGame() {
   return turn(0);
 }
+
+int Game::takeTurn() {
+  return turn(activeID)
+}
+
 int Game::turn(int activeID) {
   Player* activePlayer = &(players[activeID]);
   if (activePlayer && activePlayer->isAlive()) {

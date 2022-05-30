@@ -102,39 +102,33 @@ GameFragment::~GameFragment() {
 
 void GameFragment::onTick() {
   Client* client = getClient();
-  //todo:
-  std::string msg = "Ticks: " + std::to_string(tickCounter);
-  funds->setText(QString::fromStdString(msg));
-  /*painter->setBrush(QBrush(Qt::green));
-  painter->setPen(QPen(Qt::blue));
-  painter->drawRect(tickCounter, tickCounter, 50, 50);*/
-  json state = client->GetGameInfo();
-  if(state == nullptr) {
-    qDebug("No info from server");
-  } else {
-    Game game(state);
-  }
-  takeTurn(state);
-  tickCounter++;
-
-}
-
-void GameFragment::redraw(Game game) {
-
-}
-void GameFragment::takeTurn(json state) {
-  Client* client = getClient();
 
   tickTimer->stop();
-  //disconnect(tickTimer, &QTimer::timeout, this, &GameFragment::onTick);
-  QMessageBox message;
-  message.setText(QString::fromStdString("text"));
-  message.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-  message.setDefaultButton(QMessageBox::Yes);
-  if(message.exec() == QMessageBox::Yes)  client->MakeMove(state);
+
+  std::string msg = "Ticks: " + std::to_string(tickCounter);
+  funds->setText(QString::fromStdString(msg));
+  if (client->IsActualGameInfo()) {
+    json state = client->GetGameInfo();
+    if (state == nullptr) {
+      qDebug("No info from server");
+    } else {
+      if (gameState != nullptr) {
+        delete gameState;
+      }
+      gameState = new Game(state);
+      mapContainer->setState(gameState);
+      mapContainer->update();
+      if (client->IsActive()) {
+        gameState->takeTurn();
+        client->MakeMove(gameState->ToJson());
+      }
+    }
+  }
+  tickCounter++;
 
   tickTimer->start();
-  //connect(tickTimer, &QTimer::timeout, this, &GameFragment::onTick);
+
 }
+
 
 #include "moc_gamefragment.cpp"

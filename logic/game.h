@@ -23,6 +23,7 @@ class Game {
 
   json ToJson();
 
+  void takeTurn();
  private:
   int turn(int activeID);
   bool checkEndGame();

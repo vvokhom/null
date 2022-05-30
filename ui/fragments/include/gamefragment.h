@@ -12,7 +12,6 @@
 #include <QPixmap>
 
 #include  <QTimer>
-#include <QPainter>
 
 
 
@@ -30,16 +29,13 @@ public slots:
 private:
     QPushButton* makeTurn;
     GameMap *mapContainer;
+    Game* gameState;
     QPixmap *map;
     QVector<QLabel*> playerLabels;
     QLabel *funds;
     QTimer* tickTimer;
     int myID;
     int tickCounter;
-    QPainter* painter;
-  void update(json state);
-  void takeTurn(json state);
-  void redraw(Game game);
 
 };
 
