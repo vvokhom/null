@@ -4,7 +4,7 @@
 #define SV_BIND(a)  boost::bind(&Server::a, this, new_client, placeholders::error)
 #define NOCL_BIND(a)  boost::bind(&Server::a, this, placeholders::error)
 #define IO_BIND(a)  boost::bind(&Client::a, shared_from_this(), placeholders::error, placeholders::bytes_transferred)
-#define GAME_LOBBY_SIZE 1
+#define GAME_LOBBY_SIZE 2
 #define MAPP_SIZE 39
 
 void clear(char* arr) {
@@ -103,11 +103,20 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
             on_login();
             break;
         }
+        case State::Watcher: {
+            if ((*playroom).size() == 0) {
+                ready_to_play();
+            } else {
+                write_buff = "Happy watching the game";
+                do_write(socket_, IO_BIND(dummy));
+            }
+        }
         case State::Menu: {
             if(check == "play") {
                 if ((*playroom).size() == GAME_LOBBY_SIZE) {
                     write_buff = "Sorry, the game has started";
                     do_write(socket_, IO_BIND(dummy));
+                    state = State::Watcher;
                 } else {
                     ready_to_play();
                 }
@@ -118,6 +127,8 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
             json GameInfo = json::parse(check);
 
             int ActivePlayer = GameInfo["Active"];
+            std::string ActiveLogin = GameInfo["Players"][ActivePlayer];
+
             if( login == GameInfo["Players"][ActivePlayer]) {
                 int Players = GameInfo["PlayersNumber"];
                 for(int i = 0; i < Players; ++i) {
@@ -141,12 +152,8 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
                 }
                 GameInfo["Active"] = ActivePlayer;
 
-                for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
-                    if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Ready) {
-                        write_buff = GameInfo.dump();
-                        do_write((*map_)[it->first]->socket(), IO_BIND(dummy));
-                    }
-                 }
+                SendGameInfo(GameInfo);
+                ChangeGameState(GameInfo);
             }
             break;
         }
@@ -163,6 +170,27 @@ void Client::connection_close() {
     socket_.shutdown(ip::tcp::socket::shutdown_both);
     socket_.close();
     (*map_).erase(login);
+    
+    if((*playroom).find(login) != (*playroom).end()) {
+        int ActivePlayer = GameState["Active"];
+        GameState[login]["Alive"] = false;
+
+        int PlayersNum = GameState["PlayersNumber"];
+        std::string ActiveLogin = GameState["Players"][ActivePlayer];
+
+        if(login == ActiveLogin && (*playroom).size() > 1) {
+            ActivePlayer = ++ActivePlayer % PlayersNum;
+            ActiveLogin = GameState["Players"][ActivePlayer];
+            while(GameState[ActiveLogin]["Alive"] == false) {
+                ActivePlayer = ++ActivePlayer % PlayersNum;
+                ActiveLogin = GameState["Players"][ActivePlayer];
+            }
+            GameState["Active"] = ActivePlayer;
+        }
+
+        SendGameInfo(GameState);
+        ChangeGameState(GameState);
+    }
     (*playroom).erase(login);
 }
 
@@ -170,7 +198,13 @@ void Client::ready_to_play() {
     (*playroom)[login] = shared_from_this();
 
     if((*playroom).size() == GAME_LOBBY_SIZE) {
-        json GameInfo = create_game_info();
+        GameState = create_game_info();
+
+        for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
+            if((*map_)[it->first]->state == State::Ready) {
+                (*map_)[it->first]->state = State::Watcher;
+            }
+        }
     } else {
         state = State::Ready;
     }
@@ -205,6 +239,10 @@ std::string Client::get_state() {
     }
     case State::Ready : {
         result = "Ready";
+        break;
+    }
+    case State::Watcher : {
+        result = "Watcher";
         break;
     }
     case State::Play : {
@@ -279,13 +317,25 @@ json Client::create_game_info() {
         (*playroom)[it->first]->state = State::Play;
     }
 
-    for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
-        if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Ready) {
-            write_buff = GameInfo.dump();
-            do_write((*map_)[it->first]->socket(), IO_BIND(dummy));
-        }
-    }
+    SendGameInfo(GameInfo);
+    ChangeGameState(GameInfo);
 
     return GameInfo;
 }
 
+void Client::SendGameInfo(json GameInfo) {
+    for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
+        if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Watcher) {
+            write_buff = GameInfo.dump();
+            do_write((*map_)[it->first]->socket(), IO_BIND(dummy));
+        }
+    }
+}
+
+void Client::ChangeGameState(json GameInfo) {
+    for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
+        if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Watcher) {
+            (*map_)[it->first]->GameState = GameInfo;
+        }
+    }
+}

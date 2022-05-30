@@ -12,23 +12,40 @@ int main(int argc, char const *argv[]) {
     unsigned int port = argc > 2 ? std::stol(argv[2]) : default_port;
 
     Client client(ip, port);
+    std::string str;
 
-    // std::thread thread([&](){context.run();});
-    // thread.detach();
+    std::cin >> str;
+    client.Login(str);
 
-    std::cout << "Login" << std::endl;
-    client.Login("Leroy");
-    sleep(5);
-    std::cout << "GetInLine" << std::endl;
-    client.GetInLine();
-    sleep(5);
+    int i;
+    while(std::cin >> i) {
+        switch(i) {
+            case 1: {
+                client.GetInLine();
+                break;
+            }
+            case 2: {
+                if (client.IsActive()) {
+                    client.MakeMove(client.GetGameInfo());
+                } else {
+                    std::cout << "You are not active" << std::endl;
+                }
+                break;
+            }
+            case 3: {
+                client.CloseConnect();
+                break;
+            }
+            case 4: {
+                if(client.IsActualGameInfo()) {
+                    std::cout << "ActualGameInfo" << std::endl;
+                } else {
+                    std::cout << " NOT ActualGameInfo" << std::endl;
+                }
 
-    if (client.IsPlay()) {
-        for(int i = 0; i < 10; ++i) {
-            sleep(5);
-            client.MakeMove(client.GetGameInfo());
-            std::cout << client.GetGameInfo() << std::endl;
+                std::cout << client.GetGameInfo() << std::endl;
+                break;
+            }
         }
     }
-    client.CloseConnect();
 }

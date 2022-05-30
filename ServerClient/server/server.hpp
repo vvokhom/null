@@ -13,6 +13,7 @@ typedef const boost::system::error_code boost_error;
 enum class State {
     Login,
     Menu,
+    Watcher,
     Ready,
     Play,
     End
@@ -34,6 +35,7 @@ private:
     clients_map* map_;
     clients_map* playroom;
     State state;
+    json GameState;
 
     Client(io_context &io_context_) : socket_(io_context_) {}
     void do_read();
@@ -43,6 +45,8 @@ private:
     void connection_close();
     void ready_to_play();
     json create_game_info();
+    void SendGameInfo(json GameInfo);
+    void ChangeGameState(json GameInfo);
 
     void dummy(boost_error &error, size_t bytes) {}
 
