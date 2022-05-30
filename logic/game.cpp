@@ -83,15 +83,14 @@ void Game::initialiseMap(json GameState) { //todo: парсить карту в 
 
 }
 
-Game::Game(const Game&) {
-  
-}
 Game::Game(json GameState) {
   // устанвить сид игры:
   srand(time(nullptr));
 
 
+
   playersNum = GameState["PlayersNumber"];
+  activeID = GameState["Active"];
 
   for(int i = 0; i < playersNum; ++i) {
     std::string login = GameState["Players"][i];
@@ -105,7 +104,7 @@ int Game::startGame() {
 }
 
 int Game::takeTurn() {
-  return turn(activeID)
+  return turn(activeID);
 }
 
 int Game::turn(int activeID) {

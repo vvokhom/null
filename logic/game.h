@@ -23,7 +23,7 @@ class Game {
 
   json ToJson();
 
-  void takeTurn();
+  int takeTurn();
  private:
   int turn(int activeID);
   bool checkEndGame();
@@ -34,7 +34,9 @@ class Game {
   void endGame();
 
 
+
   int playersNum;
+  int activeID;
   std::vector<Player> players;
   Tile* map;
   int mapSize;
