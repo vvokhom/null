@@ -5,9 +5,11 @@
 #include "screensfactory.h"
 
 #include "game.h"
+#include "gamemap.h"
 
 #include <QPushButton>
 #include <QLabel>
+#include <QPixmap>
 
 #include  <QTimer>
 #include <QPainter>
@@ -26,8 +28,8 @@ public slots:
   void onTick();
 
 private:
-  QPushButton* makeTurn;
-QLabel *mapContainer;
+    QPushButton* makeTurn;
+    GameMap *mapContainer;
     QPixmap *map;
     QVector<QLabel*> playerLabels;
     QLabel *funds;

@@ -17,6 +17,7 @@ using json = nlohmann::json;
 class Game {
  public:
   Game(json GameState);
+  Game(const Game&);
   ~Game();
   int startGame(); //  Возвращает код исполнения
 

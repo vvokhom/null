@@ -82,6 +82,10 @@ void Game::initialiseMap(json GameState) { //todo: парсить карту в 
   streets[21] = Street(7, GameState["Map"][39]["Price"], 200, GameState["Map"][39]["HouseCount"], rent);
 
 }
+
+Game::Game(const Game&) {
+  
+}
 Game::Game(json GameState) {
   // устанвить сид игры:
   srand(time(nullptr));

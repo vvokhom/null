@@ -46,15 +46,15 @@ GameFragment::GameFragment():tickCounter(0) {
   tickTimer->start();
 
 
-  mapContainer = new QLabel("map");
+  mapContainer = new GameMap("map");
     map = new QPixmap(":/map.jpg");
-    mapContainer->setPixmap(map->scaled(700, 700));//centerContainer->size()));
 
-    painter = new QPainter(map);
+  mapContainer->setPixmap(map->scaled(700, 700));//centerContainer->size()));
 
-  painter->setBrush(QBrush(Qt::green));
-  painter->setPen(QPen(Qt::blue));
-  painter->drawRect(tickCounter, tickCounter, 500, 500);
+ // mapContainer->update();
+
+
+
 
 
     funds = new QLabel(QString("Your funds: 0" ));
@@ -109,7 +109,11 @@ void GameFragment::onTick() {
   painter->setPen(QPen(Qt::blue));
   painter->drawRect(tickCounter, tickCounter, 50, 50);*/
   json state = client->GetGameInfo();
-  Game game(state);
+  if(state == nullptr) {
+    qDebug("No info from server");
+  } else {
+    Game game(state);
+  }
   takeTurn(state);
   tickCounter++;
 
