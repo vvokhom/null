@@ -20,6 +20,10 @@ void Client::on_connect(boost_error &error) {
         std::cerr << "CONNECTION ERROR: " << error.message() << "\n";
         return;
     }
+
+    std::thread thread([&](){context.run();});
+    thread.detach();
+    do_read(IO_BIND(got_response));
 }
 
 void Client::on_login(boost_error &error, size_t bytes) {
@@ -36,7 +40,6 @@ void Client::ready_to_play(boost_error &error, size_t bytes) {
         return;
     }
     state = State::Ready;
-    do_read(IO_BIND(got_response));
 }
 
 void Client::MakeMove(json GameState) {
@@ -51,13 +54,10 @@ void Client::on_move(boost_error &error, size_t bytes) {
         std::cerr << "WRITE ERROR: " << error.message() << "\n";
         return;
     }
-    do_read(IO_BIND(got_response));
 }
 
 void Client::do_read(std::function<void(boost_error, size_t)> callback) {
     clear(output);
-    context.reset();
-    context.run_one();
     socket_.async_read_some(buffer(output, sizeof(output)), callback);
 }
 
@@ -82,13 +82,16 @@ void Client::got_response(boost_error &error, size_t bytes) {
 
     if ( state == State::Play ) {
         GameInfo = json::parse(response);
+        ActualGameInfo = true;
     }
 
     if ( response != "Sorry, the game has started" && state == State::Ready ) {
         GameInfo = json::parse(response);
+        ActualGameInfo = true;
         state = State::Play;
         StartPlay = true;
     }
+    do_read(IO_BIND(got_response));
 }
 
 void Client::CloseConnect() {
@@ -100,10 +103,12 @@ void Client::CloseConnect() {
 }
 
 json Client::GetGameInfo() {
+    ActualGameInfo = false;
     return GameInfo;
 }
 
 void Client::Login(std::string login) {
+    this->login = login;
     async_write(socket_, buffer(login), IO_BIND(on_login));
     context.reset();
     context.poll();
@@ -118,4 +123,21 @@ void Client::GetInLine() {
 
 bool Client::IsPlay() {
     return StartPlay;
+}
+
+bool Client::IsActive() {
+    if(GameInfo.empty()) {
+        return false;
+    }
+
+    int ActiveId = GameInfo["Active"];
+    if (login != GameInfo["Players"][ActiveId]) {
+        return false;
+    }
+
+    return true;
+}
+
+bool Client::IsActualGameInfo() {
+    return ActualGameInfo;
 }

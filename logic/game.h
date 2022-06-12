@@ -6,15 +6,21 @@
 #define LOGIC__GAME_H_
 
 #include<vector>
+#include <string>
 #include"player.h"
 #include "tile.h"
 #include "street.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class Game {
  public:
-  Game();
+  Game(json GameState);
   ~Game();
   int startGame(); //  Возвращает код исполнения
+
+  json ToJson();
 
  private:
   int turn(int activeID);
@@ -29,10 +35,11 @@ class Game {
   int playersNum;
   std::vector<Player> players;
   Tile* map;
+  int mapSize;
   Street* streets;
   int turnCount;
-  bool response(int playerID);
-  void initialiseMap();
+  virtual bool response(int playerID, std::string message);
+  void initialiseMap(json GameState);
 
 
 

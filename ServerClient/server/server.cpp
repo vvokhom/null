@@ -4,7 +4,7 @@
 #define SV_BIND(a)  boost::bind(&Server::a, this, new_client, placeholders::error)
 #define NOCL_BIND(a)  boost::bind(&Server::a, this, placeholders::error)
 #define IO_BIND(a)  boost::bind(&Client::a, shared_from_this(), placeholders::error, placeholders::bytes_transferred)
-#define GAME_LOBBY_SIZE 1
+#define GAME_LOBBY_SIZE 2
 #define MAPP_SIZE 39
 
 void clear(char* arr) {
@@ -103,11 +103,20 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
             on_login();
             break;
         }
+        case State::Watcher: {
+            if ((*playroom).size() == 0) {
+                ready_to_play();
+            } else {
+                write_buff = "Happy watching the game";
+                do_write(socket_, IO_BIND(dummy));
+            }
+        }
         case State::Menu: {
             if(check == "play") {
                 if ((*playroom).size() == GAME_LOBBY_SIZE) {
                     write_buff = "Sorry, the game has started";
                     do_write(socket_, IO_BIND(dummy));
+                    state = State::Watcher;
                 } else {
                     ready_to_play();
                 }
@@ -118,8 +127,9 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
             json GameInfo = json::parse(check);
 
             int ActivePlayer = GameInfo["Active"];
-            if( login == GameInfo["Players"][ActivePlayer]) {
+            std::string ActiveLogin = GameInfo["Players"][ActivePlayer];
 
+            if( login == GameInfo["Players"][ActivePlayer]) {
                 int Players = GameInfo["PlayersNumber"];
                 for(int i = 0; i < Players; ++i) {
                     if((*playroom).find(GameInfo["Players"][i]) == (*playroom).end()) {
@@ -142,12 +152,8 @@ void Client::input_analysis(boost_error &error, size_t bytes) {
                 }
                 GameInfo["Active"] = ActivePlayer;
 
-                for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
-                    if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Ready) {
-                        write_buff = GameInfo.dump();
-                        do_write((*map_)[it->first]->socket(), IO_BIND(dummy));
-                    }
-                 }
+                SendGameInfo(GameInfo);
+                ChangeGameState(GameInfo);
             }
             break;
         }
@@ -164,6 +170,27 @@ void Client::connection_close() {
     socket_.shutdown(ip::tcp::socket::shutdown_both);
     socket_.close();
     (*map_).erase(login);
+    
+    if((*playroom).find(login) != (*playroom).end()) {
+        int ActivePlayer = GameState["Active"];
+        GameState[login]["Alive"] = false;
+
+        int PlayersNum = GameState["PlayersNumber"];
+        std::string ActiveLogin = GameState["Players"][ActivePlayer];
+
+        if(login == ActiveLogin && (*playroom).size() > 1) {
+            ActivePlayer = ++ActivePlayer % PlayersNum;
+            ActiveLogin = GameState["Players"][ActivePlayer];
+            while(GameState[ActiveLogin]["Alive"] == false) {
+                ActivePlayer = ++ActivePlayer % PlayersNum;
+                ActiveLogin = GameState["Players"][ActivePlayer];
+            }
+            GameState["Active"] = ActivePlayer;
+        }
+
+        SendGameInfo(GameState);
+        ChangeGameState(GameState);
+    }
     (*playroom).erase(login);
 }
 
@@ -171,7 +198,13 @@ void Client::ready_to_play() {
     (*playroom)[login] = shared_from_this();
 
     if((*playroom).size() == GAME_LOBBY_SIZE) {
-        json GameInfo = create_game_info();
+        GameState = create_game_info();
+
+        for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
+            if((*map_)[it->first]->state == State::Ready) {
+                (*map_)[it->first]->state = State::Watcher;
+            }
+        }
     } else {
         state = State::Ready;
     }
@@ -208,6 +241,10 @@ std::string Client::get_state() {
         result = "Ready";
         break;
     }
+    case State::Watcher : {
+        result = "Watcher";
+        break;
+    }
     case State::Play : {
         result = "Play";
         break;
@@ -235,58 +272,70 @@ json Client::create_game_info() {
     GameInfo["PlayersNumber"] = GAME_LOBBY_SIZE;
 
     GameInfo["Map"] = {};
-    GameInfo["Map"][0] = {{"Type", 0}, {"Price", 0}, {"StreetId", 0}, {"OwnerId", -1}};
-    GameInfo["Map"][1] = {{"Type", 1}, {"Price", 60}, {"StreetId", 1}, {"OwnerId", -1}};
-    GameInfo["Map"][2] = {{"Type", 7}, {"Price", 0}, {"StreetId", 2}, {"OwnerId", -1}};
-    GameInfo["Map"][3] = {{"Type", 1}, {"Price", 60}, {"StreetId", 3}, {"OwnerId", -1}};
-    GameInfo["Map"][4] = {{"Type", 2}, {"Price", 200}, {"StreetId", 4}, {"OwnerId", -1}};
-    GameInfo["Map"][5] = {{"Type", 3}, {"Price", 200}, {"StreetId", 5}, {"OwnerId", -1}};
-    GameInfo["Map"][6] = {{"Type", 1}, {"Price", 100}, {"StreetId", 6}, {"OwnerId", -1}};
-    GameInfo["Map"][7] = {{"Type", 7}, {"Price", 0}, {"StreetId", 7}, {"OwnerId", -1}};
-    GameInfo["Map"][8] = {{"Type", 1}, {"Price", 100}, {"StreetId", 8}, {"OwnerId", -1}};
-    GameInfo["Map"][9] = {{"Type", 1}, {"Price", 120}, {"StreetId", 9}, {"OwnerId", -1}};
-    GameInfo["Map"][10] = {{"Type", 7}, {"Price", 0}, {"StreetId", 10}, {"OwnerId", -1}};
-    GameInfo["Map"][11] = {{"Type", 1}, {"Price", 140}, {"StreetId", 11}, {"OwnerId", -1}};
-    GameInfo["Map"][12] = {{"Type", 5}, {"Price", 150}, {"StreetId", 12}, {"OwnerId", -1}};
-    GameInfo["Map"][13] = {{"Type", 1}, {"Price", 140}, {"StreetId", 13}, {"OwnerId", -1}};
-    GameInfo["Map"][14] = {{"Type", 1}, {"Price", 160}, {"StreetId", 14}, {"OwnerId", -1}};
-    GameInfo["Map"][15] = {{"Type", 3}, {"Price", 200}, {"StreetId", 15}, {"OwnerId", -1}};
-    GameInfo["Map"][16] = {{"Type", 1}, {"Price", 180}, {"StreetId", 16}, {"OwnerId", -1}};
-    GameInfo["Map"][17] = {{"Type", 7}, {"Price", 0}, {"StreetId", 17}, {"OwnerId", -1}};
-    GameInfo["Map"][18] = {{"Type", 1}, {"Price", 180}, {"StreetId", 18}, {"OwnerId", -1}};
-    GameInfo["Map"][19] = {{"Type", 1}, {"Price", 200}, {"StreetId", 19}, {"OwnerId", -1}};
-    GameInfo["Map"][20] = {{"Type", 7}, {"Price", 0}, {"StreetId", 20}, {"OwnerId", -1}};
-    GameInfo["Map"][21] = {{"Type", 1}, {"Price", 220}, {"StreetId", 21}, {"OwnerId", -1}};
-    GameInfo["Map"][22] = {{"Type", 7}, {"Price", 0}, {"StreetId", 22}, {"OwnerId", -1}};
-    GameInfo["Map"][23] = {{"Type", 1}, {"Price", 220}, {"StreetId", 23}, {"OwnerId", -1}};
-    GameInfo["Map"][24] = {{"Type", 1}, {"Price", 240}, {"StreetId", 24}, {"OwnerId", -1}};
-    GameInfo["Map"][25] = {{"Type", 3}, {"Price", 200}, {"StreetId", 25}, {"OwnerId", -1}};
-    GameInfo["Map"][26] = {{"Type", 1}, {"Price", 260}, {"StreetId", 26}, {"OwnerId", -1}};
-    GameInfo["Map"][27] = {{"Type", 1}, {"Price", 260}, {"StreetId", 27}, {"OwnerId", -1}};
-    GameInfo["Map"][28] = {{"Type", 4}, {"Price", 150}, {"StreetId", 28}, {"OwnerId", -1}};
-    GameInfo["Map"][29] = {{"Type", 1}, {"Price", 280}, {"StreetId", 29}, {"OwnerId", -1}};
-    GameInfo["Map"][30] = {{"Type", 6}, {"Price", 0}, {"StreetId", 30}, {"OwnerId", -1}};
-    GameInfo["Map"][31] = {{"Type", 1}, {"Price", 300}, {"StreetId", 31}, {"OwnerId", -1}};
-    GameInfo["Map"][32] = {{"Type", 1}, {"Price", 300}, {"StreetId", 32}, {"OwnerId", -1}};
-    GameInfo["Map"][33] = {{"Type", 7}, {"Price", 0}, {"StreetId", 33}, {"OwnerId", -1}};
-    GameInfo["Map"][34] = {{"Type", 1}, {"Price", 320}, {"StreetId", 34}, {"OwnerId", -1}};
-    GameInfo["Map"][35] = {{"Type", 3}, {"Price", 200}, {"StreetId", 35}, {"OwnerId", -1}};
-    GameInfo["Map"][36] = {{"Type", 7}, {"Price", 0}, {"StreetId", 36}, {"OwnerId", -1}};
-    GameInfo["Map"][37] = {{"Type", 1}, {"Price", 350}, {"StreetId", 37}, {"OwnerId", -1}};
-    GameInfo["Map"][38] = {{"Type", 2}, {"Price", 100}, {"StreetId", 38}, {"OwnerId", -1}};
-    GameInfo["Map"][39] = {{"Type", 1}, {"Price", 400}, {"StreetId", 39}, {"OwnerId", -1}};
+    GameInfo["Map"][0] = {{"Type", 0}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][1] = {{"Type", 1}, {"Price", 60}, {"StreetId", 0}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][2] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][3] = {{"Type", 1}, {"Price", 60}, {"StreetId", 1}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][4] = {{"Type", 2}, {"Price", 200}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][5] = {{"Type", 3}, {"Price", 200}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][6] = {{"Type", 1}, {"Price", 100}, {"StreetId", 2}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][7] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][8] = {{"Type", 1}, {"Price", 100}, {"StreetId", 3}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][9] = {{"Type", 1}, {"Price", 120}, {"StreetId", 4}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][10] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][11] = {{"Type", 1}, {"Price", 140}, {"StreetId", 5}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][12] = {{"Type", 5}, {"Price", 150}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][13] = {{"Type", 1}, {"Price", 140}, {"StreetId", 6}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][14] = {{"Type", 1}, {"Price", 160}, {"StreetId", 7}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][15] = {{"Type", 3}, {"Price", 200}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][16] = {{"Type", 1}, {"Price", 180}, {"StreetId", 8}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][17] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][18] = {{"Type", 1}, {"Price", 180}, {"StreetId", 9}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][19] = {{"Type", 1}, {"Price", 200}, {"StreetId", 10}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][20] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][21] = {{"Type", 1}, {"Price", 220}, {"StreetId", 11}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][22] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][23] = {{"Type", 1}, {"Price", 220}, {"StreetId", 12}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][24] = {{"Type", 1}, {"Price", 240}, {"StreetId", 13}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][25] = {{"Type", 3}, {"Price", 200}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][26] = {{"Type", 1}, {"Price", 260}, {"StreetId", 14}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][27] = {{"Type", 1}, {"Price", 260}, {"StreetId", 15}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][28] = {{"Type", 4}, {"Price", 150}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][29] = {{"Type", 1}, {"Price", 280}, {"StreetId", 16}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][30] = {{"Type", 6}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][31] = {{"Type", 1}, {"Price", 300}, {"StreetId", 17}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][32] = {{"Type", 1}, {"Price", 300}, {"StreetId", 18}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][33] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][34] = {{"Type", 1}, {"Price", 320}, {"StreetId", 19}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][35] = {{"Type", 3}, {"Price", 200}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][36] = {{"Type", 7}, {"Price", 0}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][37] = {{"Type", 1}, {"Price", 350}, {"StreetId", 20}, {"OwnerId", -1}, {"HouseCount", 0}};
+    GameInfo["Map"][38] = {{"Type", 2}, {"Price", 100}, {"StreetId", -1}, {"OwnerId", -1}};
+    GameInfo["Map"][39] = {{"Type", 1}, {"Price", 400}, {"StreetId", 21}, {"OwnerId", -1}, {"HouseCount", 0}};
 
     for(auto it = (*playroom).begin(); it != (*playroom).end(); ++it) {
         (*playroom)[it->first]->state = State::Play;
     }
 
-    for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
-        if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Ready) {
-            write_buff = GameInfo.dump();
-            do_write((*map_)[it->first]->socket(), IO_BIND(dummy));
-        }
-    }
+    SendGameInfo(GameInfo);
+    ChangeGameState(GameInfo);
 
     return GameInfo;
 }
 
+void Client::SendGameInfo(json GameInfo) {
+    for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
+        if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Watcher) {
+            write_buff = GameInfo.dump();
+            do_write((*map_)[it->first]->socket(), IO_BIND(dummy));
+        }
+    }
+}
+
+void Client::ChangeGameState(json GameInfo) {
+    for(auto it = (*map_).begin(); it != (*map_).end(); ++it) {
+        if((*map_)[it->first]->state == State::Play || (*map_)[it->first]->state == State::Watcher) {
+            (*map_)[it->first]->GameState = GameInfo;
+        }
+    }
+}

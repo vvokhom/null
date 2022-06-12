@@ -7,14 +7,15 @@
 
 class Street { //Информация о владельце указана только в тайле. Не знаю насколько это правильно
  public:
-  Street(int regionID, int price, int housePrice, const int rent[7]);
+  Street(int regionID, int price, int housePrice, int houseCount, const int rent[7]);
   ~Street();
   int getRent();
   int getPrice();
   int getRegionID();
   int getHouses();
+  bool buyHouse(int playerMoney);
  private:
-  int rent[7];
+  int rent[6];
   int price;
   int housePrice;
   int houses;

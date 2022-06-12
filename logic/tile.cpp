@@ -3,9 +3,11 @@
 //
 
 #include "tile.h"
-Tile::Tile(TileType type, int price, int streetID):ownerID(-1), price(price), streetID(streetID), type(type) {
+Tile::Tile(TileType type, int price, int streetID, int ownerID): ownerID(ownerID), price(price), streetID(streetID), type(type) {
 
 }
+
+Tile::~Tile()=default;
 
 TileType Tile::getType() {
   return  type;
@@ -14,6 +16,11 @@ TileType Tile::getType() {
 
 int Tile::getOwnerID() {
   return ownerID;
+
+}
+
+void Tile::setOwnerID(int id) {
+  ownerID = id;
 
 }
 

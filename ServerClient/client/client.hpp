@@ -1,3 +1,5 @@
+#pragma once
+
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp>
 #include <iostream>
@@ -27,6 +29,8 @@ private:
     char output[1024 * 5];
     json GameInfo;
     bool StartPlay = false;
+    std::string login;
+    bool ActualGameInfo = false;
 
     void connect(std::string &ip, unsigned int &port);
     void on_connect(boost_error &error);
@@ -44,6 +48,8 @@ public:
     void Login(std::string login);
     void GetInLine();
     bool IsPlay();
+    bool IsActive();
+    bool IsActualGameInfo();
     void MakeMove(json GameState);
     void CloseConnect();
 };
